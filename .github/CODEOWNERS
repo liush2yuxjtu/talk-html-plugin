@@ -1,0 +1,27 @@
+# CODEOWNERS — talk-html-plugin
+#
+# GitHub CODEOWNERS uses GitHub usernames (or @org/team handles) that
+# have write access to this repo. @LiuShiyuMath is the canonical owner
+# of LiuShiyuMath/talk-html-plugin (upstream). For the fork under
+# liush2yuxjtu/talk-html-plugin, GitHub will fall back to anyone with
+# write access if the listed owner is not a collaborator.
+
+# default: everything goes through LiuShiyuMath
+*                           @LiuShiyuMath
+
+# skill engines are the most sensitive surface
+/skills/talk-html/          @LiuShiyuMath
+/skills/talk-ship/          @LiuShiyuMath
+
+# router / role commands = public surface, more lenient
+/commands/                  @LiuShiyuMath
+
+# plugin manifests (Claude + Codex) — bump with care
+/.claude-plugin/            @LiuShiyuMath
+/.codex-plugin/             @LiuShiyuMath
+
+# installation script = trust boundary
+/install.sh                 @LiuShiyuMath
+
+# everything CI / community-health
+/.github/                   @LiuShiyuMath

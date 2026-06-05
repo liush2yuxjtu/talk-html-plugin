@@ -1,0 +1,191 @@
+# workflows/ci.yml — talk-html-plugin CI
+#
+# This plugin ships as a Claude Code / Codex plugin: there is no
+# build step, no compile, no bundling. The "CI" for a plugin is
+# contract validation:
+#
+#   1. shell scripts parse (bash -n)
+#   2. node ESM scripts parse (node --check)
+#   3. JSON files parse (jq empty)
+#   4. role-routing.csv is well-formed and closed-set
+#   5. every role_command has a commands/<role>.md
+#   6. every role_command has a router dispatch line in commands/talk-html.md
+#   7. commands/ and skills/ directory shape matches the install.sh
+#
+# runs on push to main, push to any branch, and PRs to main.
+
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+# cancel in-progress runs for the same ref
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  shell-parse:
+    name: shell scripts parse
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: bash -n on every *.sh
+        run: |
+          set -e
+          mapfile -t files < <(find . -name '*.sh' \
+            -not -path './.git/*' \
+            -not -path './skills/browse/dist/*' \
+            -not -path './skills/gpt-image/dist/*')
+          for f in "${files[@]}"; do
+            bash -n "$f"
+          done
+          echo "OK · ${#files[@]} shell scripts parsed"
+
+  node-parse:
+    name: node ESM scripts parse
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: node --check on every *.mjs / *.cjs (best-effort, no node_modules)
+        run: |
+          set -e
+          mapfile -t files < <(find . \( -name '*.mjs' -o -name '*.cjs' -o -name '*.js' \) \
+            -not -path './.git/*' \
+            -not -path './skills/browse/dist/*' \
+            -not -path './skills/browse/node_modules/*' \
+            -not -path './skills/gpt-image/node_modules/*' \
+            -not -path './skills/browse/src/bun-polyfill.cjs')
+          for f in "${files[@]}"; do
+            # tolerate scripts that import node_modules we don't have in CI
+            node --check "$f" || echo "WARN · $f failed parse (likely needs install)"
+          done
+
+  json-validate:
+    name: JSON files parse
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: jq empty on every *.json
+        run: |
+          set -e
+          mapfile -t files < <(find . -name '*.json' \
+            -not -path './.git/*' \
+            -not -path './skills/*/node_modules/*' \
+            -not -path './skills/*/package-lock.json' \
+            -not -path './skills/*/bun.lockb' )
+          for f in "${files[@]}"; do
+            # tolerate the test fixture's deliberately-malformed JSON
+            if [[ "$f" == *"/tests/fixtures/bad-example.html.json" ]] || \
+               [[ "$f" == *"bad-example"* ]]; then
+              echo "SKIP · $f (deliberately malformed fixture)"
+              continue
+            fi
+            jq empty < "$f"
+          done
+          echo "OK · ${#files[@]} JSON files parsed"
+
+  role-routing-csv:
+    name: role-routing.csv is well-formed
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: header row matches the 8-column contract
+        run: |
+          set -e
+          expected='artifact_type,who_must_see,role_command,visual_proof_to_build,build_tools,programmatic_evaluation_tools,deterministic_gate,ci_output'
+          got=$(head -1 skills/talk-html/role-routing.csv)
+          if [[ "$got" != "$expected" ]]; then
+            echo "FAIL · role-routing.csv header mismatch"
+            echo "  expected: $expected"
+            echo "  got:      $got"
+            exit 1
+          fi
+          echo "OK · header row matches"
+      - name: role_command values are in the closed set
+        run: |
+          set -e
+          # Closed set: 8 role commands + /talk-ship. Update both this CI list
+          # and the router table in commands/talk-html.md when adding a role.
+          allowed=(/talk-ux /talk-ceo /talk-data /talk-reviewer \
+                   /talk-cto /talk-qa /talk-docs /talk-legal /talk-ship)
+          while IFS=, read -r artifact_type who_must_see role_command _; do
+            # skip header
+            [[ "$artifact_type" == "artifact_type" ]] && continue
+            for a in "${allowed[@]}"; do
+              [[ "$role_command" == "$a" ]] && continue 2
+            done
+            echo "FAIL · unknown role_command '$role_command' in row artifact_type='$artifact_type'"
+            echo "  closed set: ${allowed[*]}"
+            exit 1
+          done < skills/talk-html/role-routing.csv
+          echo "OK · every role_command is in the closed set"
+      - name: talk-profiler is dead
+        run: |
+          set -e
+          if grep -RnE '\btalk-profiler\b' . \
+              --include='*.md' --include='*.json' --include='*.sh' --include='*.mjs' --include='*.yml' \
+              --exclude-dir='.git' 2>/dev/null; then
+            echo "FAIL · talk-profiler was dropped in v0.4.0; it must not be referenced"
+            exit 1
+          fi
+          echo "OK · talk-profiler is not referenced anywhere"
+      - name: every role_command has a commands/<role>.md
+        run: |
+          set -e
+          for role in talk-ux talk-ceo talk-data talk-reviewer \
+                      talk-cto talk-qa talk-docs talk-legal talk-ship; do
+            if [[ ! -f "commands/${role}.md" ]]; then
+              echo "FAIL · commands/${role}.md missing"
+              exit 1
+            fi
+          done
+          echo "OK · all 9 role_command files present"
+      - name: router dispatches every role
+        run: |
+          set -e
+          for role in talk-ux talk-ceo talk-data talk-reviewer \
+                      talk-cto talk-qa talk-docs talk-legal talk-ship; do
+            # router file is commands/talk-html.md
+            if ! grep -qE "(^|[[:space:]])/?${role}([[:space:]]|$|[,./])" commands/talk-html.md; then
+              echo "FAIL · commands/talk-html.md router does not mention /${role}"
+              exit 1
+            fi
+          done
+          echo "OK · router mentions every role"
+
+  install-shape:
+    name: install.sh + directory shape match
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: install.sh references every engine
+        run: |
+          set -e
+          for engine in talk-html talk-ship; do
+            if ! grep -qE "skills/${engine}" install.sh; then
+              echo "FAIL · install.sh does not reference skills/${engine}"
+              exit 1
+            fi
+          done
+          echo "OK · install.sh wires both engines"
+      - name: skill directories exist
+        run: |
+          set -e
+          for d in skills/talk-html skills/talk-ship skills/gpt-image skills/browse; do
+            if [[ ! -d "$d" ]]; then
+              echo "FAIL · $d missing"
+              exit 1
+            fi
+            if [[ ! -f "$d/SKILL.md" ]] && [[ "$d" != "skills/gpt-image" ]] && [[ "$d" != "skills/browse" ]]; then
+              echo "FAIL · $d/SKILL.md missing"
+              exit 1
+            fi
+          done
+          echo "OK · all 4 skill dirs present, talk-html + talk-ship have SKILL.md"

@@ -1,0 +1,14 @@
+# FUNDING.yml — talk-html-plugin
+#
+# GitHub Sponsors config. https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/displaying-a-sponsor-button-in-your-repository
+#
+# Replace the placeholder values with the maintainer's actual funding
+# endpoints. None are required; missing keys simply don't render a
+# button. The current values are the upstream maintainer's known
+# handles, but the file is intentionally minimal — fill in as more
+# options open up.
+
+github: [LiuShiyuMath]
+# patreon: LiuShiyuMath
+# open_collective: talk-html-plugin
+# custom: ['https://example.com/donate']

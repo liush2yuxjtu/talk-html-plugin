@@ -38,6 +38,19 @@
         grounding→embed→publish→recall      tmux→MP4 + contact sheet
 ```
 
+## What's in this template / Quick tour
+
+> 想用现成的 / 想 fork 改 / 想"装上就能用" —— 三条路径下面都接得上。
+
+装上 `talk-html-plugin` 之后你直接得到：
+
+- **10 个 slash 命令** —— `/talk-html` 路由器 + 8 个 role 命令(`/talk-ux / talk-ceo / talk-data / talk-reviewer / talk-cto / talk-qa / talk-docs / talk-legal`)+ `/talk-ship` ship 录制。详细见 [§命令](#命令)。
+- **2 套引擎** —— `skills/talk-html/`(静态页渲染 + 真内容 grounding + 嵌入真 recording + gist 发布回看)与 `skills/talk-ship/`(Playwright / tmux + asciinema 端到端 user journey 录制)。详细见 [§Two-engine structure](#two-engine-structure)。
+- **可选配的 `skills/gpt-image/`** —— `/talk-html --image` 自动给发布页面配一组图(发到 ChatGPT 让它读页 → 生图 → 嵌回 → 重发),由 plugin 自带的 browse daemon 驱动。
+- **role-routing 权威表** —— `skills/talk-html/role-routing.csv` 是 artifact_type → 角色 → 必看 proof → build/eval/gate 的契约源。改这一张表,所有 role 命令的契约一起更新。详细见 [§路由数据源](#路由数据源)。
+- **5 endpoint × 2 engine = 6 直接软链** —— fresh install 时 `install.sh` 把 `~/.claude / ~/.codex / ~/.agents` 三个路径各建 2 条 symlink,全部 2-hop direct 指向 `PLUGIN_DEST/skills/{talk-html,talk-ship}/`,无 3-hop 链、无目录复制。
+- **CI 兜底** —— `.github/workflows/ci.yml` 5 个 job 验 shell parse / node parse / json parse / role-routing.csv 闭合集 / install.sh 引擎完整性,PR 提上来自动跑。
+
 落地页（GitHub Pages）：<https://liushiyumath.github.io/talk-html-plugin/>
 
 ## 一行安装

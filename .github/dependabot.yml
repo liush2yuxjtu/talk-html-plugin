@@ -1,0 +1,67 @@
+# dependabot.yml — talk-html-plugin
+#
+# The plugin itself is a Claude Code / Codex plugin (no build, no compile).
+# The only ecosystem that actually has a lockfile here is github-actions
+# (the workflow files in .github/workflows/). The other ecosystems are
+# included for the two npm-backed skills (browse, gpt-image) so that when
+# their package.json is committed, dependabot starts watching them.
+#
+# grouped by directory so PRs don't pile up, with weekly cadence so we
+# don't drown the maintainer in noise.
+
+version: 2
+updates:
+
+  # workflow files: github-actions (always relevant, no lockfile needed)
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+    groups:
+      github-actions-minor:
+        patterns:
+          - "*"
+        update-types:
+          - "minor"
+          - "patch"
+    labels:
+      - "dependencies"
+      - "ci"
+
+  # npm: skills/browse (TS+CDP, bun runtime) — if a package.json lands here
+  - package-ecosystem: "npm"
+    directory: "/skills/browse"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+    groups:
+      browse-minor:
+        patterns:
+          - "*"
+        update-types:
+          - "minor"
+          - "patch"
+    labels:
+      - "dependencies"
+      - "browse"
+    ignore:
+      # bun is updated via brew; pinning in package.json is fine
+      - dependency-name: "bun-types"
+
+  # npm: skills/gpt-image (TS+Playwright, bun runtime)
+  - package-ecosystem: "npm"
+    directory: "/skills/gpt-image"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+    groups:
+      gpt-image-minor:
+        patterns:
+          - "*"
+        update-types:
+          - "minor"
+          - "patch"
+    labels:
+      - "dependencies"
+      - "gpt-image"
