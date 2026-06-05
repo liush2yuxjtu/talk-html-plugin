@@ -1,0 +1,511 @@
+<!doctype html>
+<!-- talk-html-meta {"session_id":"not-set","job_dir":null,"branch":"main","prompt_summary":"v0.4.0 把 /talk-ship 从顶层独立 skill 收回 plugin 内,统一 single source of truth = PLUGIN_DEST/skills/{talk-html,talk-ship}/;5 endpoint × 2 engine = 6 软链全指向同源。drop talk-profiler(曾在 cache 0.3.0 占据第 9 命令位)。","origin_prompt":"v0.4.0 release of the talk-html plugin (this very plugin). What I did: source repo at /Users/liushiyuwin/plugins/talk-html-plugin/ was missing git history — git init + first commit a684222. Source already shipped skills/talk-ship/ (68K, byte-identical to the legacy top-level ~/.claude/skills/talk-ship symlink) and commands/talk-ship.md and the ship row in role-routing.csv and the router dispatch in commands/talk-html.md. Real diff: 3 metadata bumps — .claude-plugin/plugin.json 0.3.0 → 0.4.0 (description 8→9 sub-commands, /talk-ship listed, +7 keywords), .codex-plugin/plugin.json mirrored, README 'v0.4 起再加入' → 'v0.4 加入'. talk-profiler dropped (was only in cache 0.3.0, never in source). top-level ~/.claude/skills/talk-ship and ~/.codex/skills/talk-ship already are 2-hop symlinks → source, so no manual delete needed. Cache at ~/.claude/plugins/cache/personal-talk-html/talk-html-plugin/0.3.0/ is STALE — user must /plugin update personal-talk-html (or /exit + reload) to pick up v0.4.0.","template":"recap","generated_at":"2026-06-05T03:50:04Z"} -->
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>v0.4.0 talk-html-plugin · talk-ship 收回 + drop talk-profiler · Recap</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;500;700&family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#1a1a1a;--ink-2:#3a3a3a;--ink-3:#666;--ink-4:#9aa0a6;
+    --bg:#fbfaf6;--bg-2:#f3efe5;--bg-3:#e8e3d4;
+    --line:#d6cfb8;--line-2:#c5bda3;
+    --accent:#8a2a2a;--accent-2:#b04a3a;--good:#2d6a3e;--warn:#a26b00;
+    --mono:"SF Mono","SFNSMono",ui-monospace,Menlo,Consolas,"Noto Sans Mono CJK SC",monospace;
+    --serif:"Noto Serif SC","Source Han Serif SC","Songti SC",serif;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0;background:var(--bg);color:var(--ink);font-family:var(--serif);font-size:16px;line-height:1.7;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:920px;margin:0 auto;padding:48px 28px 80px}
+  header.lead{padding:32px 0 24px;border-bottom:1px solid var(--line)}
+  .eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.18em;color:var(--accent);text-transform:uppercase;margin:0 0 14px}
+  h1{font-size:34px;line-height:1.25;margin:0 0 14px;font-weight:700;letter-spacing:-.01em}
+  h1 .strike{color:var(--ink-3);text-decoration:line-through;margin-right:6px;font-weight:500}
+  .claim{font-size:18px;line-height:1.55;color:var(--ink-2);margin:18px 0 0;max-width:62ch}
+  .claim strong{color:var(--ink);background:linear-gradient(transparent 60%,var(--bg-3) 60%);padding:0 2px}
+  .proofchain{display:flex;flex-wrap:wrap;gap:8px;margin:22px 0 0;padding:0;list-style:none}
+  .proofchain li{font-family:var(--mono);font-size:11px;padding:5px 10px;border:1px solid var(--line-2);border-radius:2px;background:#fff;color:var(--ink-2)}
+  .proofchain li b{color:var(--ink);margin-right:6px}
+  h2{font-size:22px;line-height:1.3;margin:54px 0 14px;padding-bottom:8px;border-bottom:1px solid var(--line);font-weight:700}
+  h3{font-size:16px;line-height:1.4;margin:28px 0 10px;color:var(--ink);font-weight:700}
+  p{margin:0 0 14px;color:var(--ink-2)}
+  p strong{color:var(--ink)}
+  code{font-family:var(--mono);font-size:.9em;background:var(--bg-2);padding:1px 6px;border-radius:2px;color:var(--ink)}
+  pre{font-family:var(--mono);font-size:12.5px;line-height:1.55;background:var(--bg-2);border:1px solid var(--line);padding:14px 16px;border-radius:2px;overflow-x:auto;color:var(--ink-2)}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+  .card{background:#fff;border:1px solid var(--line);padding:18px 20px;border-radius:2px}
+  .card .k{font-family:var(--mono);font-size:11px;letter-spacing:.1em;color:var(--ink-3);text-transform:uppercase;margin:0 0 6px}
+  .card .v{font-size:22px;font-weight:700;color:var(--ink);line-height:1.2}
+  .card .sub{font-size:13px;color:var(--ink-3);margin-top:6px}
+  .card.good .v{color:var(--good)}
+  .card.warn .v{color:var(--warn)}
+  .card.bad .v{color:var(--accent)}
+  svg.diagram{display:block;width:100%;height:auto;background:#fff;border:1px solid var(--line);border-radius:2px;margin:14px 0 6px}
+  figcaption{font-family:var(--mono);font-size:11.5px;color:var(--ink-3);margin:0 0 18px;line-height:1.5}
+  table{width:100%;border-collapse:collapse;font-size:13.5px;margin:8px 0 18px;background:#fff;border:1px solid var(--line)}
+  th,td{text-align:left;padding:9px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+  th{background:var(--bg-2);font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3);font-weight:500}
+  tr:last-child td{border-bottom:0}
+  td code{font-size:12px}
+  .timeline{position:relative;margin:14px 0 20px;padding:0;list-style:none}
+  .timeline::before{content:"";position:absolute;left:9px;top:6px;bottom:6px;width:2px;background:var(--line-2)}
+  .timeline li{position:relative;padding:6px 0 14px 32px;font-size:13.5px;color:var(--ink-2)}
+  .timeline li::before{content:"";position:absolute;left:4px;top:14px;width:12px;height:12px;border-radius:50%;background:var(--bg);border:2px solid var(--ink-3)}
+  .timeline li.head::before{background:var(--accent);border-color:var(--accent)}
+  .timeline li .hash{font-family:var(--mono);color:var(--ink);font-weight:700;margin-right:8px;font-size:12px}
+  .timeline li .msg{color:var(--ink-2)}
+  .timeline li .who{font-family:var(--mono);font-size:11px;color:var(--ink-3);margin-left:8px}
+  .pillrow{display:flex;flex-wrap:wrap;gap:10px;margin:18px 0}
+  .pill{font-family:var(--mono);font-size:11.5px;background:var(--bg-2);border:1px solid var(--line);padding:6px 10px;border-radius:2px;color:var(--ink-2)}
+  .pill b{color:var(--ink)}
+  .audit{position:fixed;right:14px;bottom:14px;background:var(--ink);color:#f5f1e6;font-family:var(--mono);font-size:11px;padding:8px 12px;border-radius:2px;box-shadow:0 4px 16px rgba(0,0,0,.18);max-width:360px;line-height:1.5;z-index:10}
+  .audit b{color:#ffd47a}
+  .audit .row{display:flex;justify-content:space-between;gap:10px;margin-top:4px}
+  .audit .row button{background:transparent;border:1px solid #5a5a5a;color:#f5f1e6;font:inherit;cursor:pointer;padding:1px 6px;border-radius:2px}
+  .audit .row button:hover{border-color:#ffd47a;color:#ffd47a}
+  .audit .tip{font-size:10px;color:#aaa;margin-top:4px;word-break:break-all}
+  .continuebar{margin:48px 0 0;padding:18px 20px;background:var(--bg-2);border:1px solid var(--line);border-radius:2px}
+  .continuebar h3{margin:0 0 8px;font-size:14px;font-family:var(--mono);text-transform:uppercase;letter-spacing:.1em;color:var(--ink-3);font-weight:500}
+  .continuebar .instr{display:flex;gap:8px;margin-top:8px}
+  .continuebar input{flex:1;font-family:var(--mono);font-size:12px;padding:8px 10px;border:1px solid var(--line-2);background:#fff;border-radius:2px;color:var(--ink)}
+  .continuebar button{font-family:var(--mono);font-size:12px;padding:8px 14px;background:var(--ink);color:#f5f1e6;border:0;border-radius:2px;cursor:pointer}
+  .continuebar button:hover{background:var(--accent)}
+  .continuebar .hint{font-size:11.5px;color:var(--ink-3);margin-top:8px}
+  footer.meta{margin:32px 0 0;padding:18px 0 0;border-top:1px solid var(--line);font-family:var(--mono);font-size:11.5px;color:var(--ink-3);line-height:1.7}
+  footer.meta b{color:var(--ink-2)}
+  details.notes{margin:18px 0;background:#fff;border:1px solid var(--line);border-radius:2px;padding:10px 14px}
+  details.notes summary{font-family:var(--mono);font-size:12px;color:var(--ink-2);cursor:pointer;letter-spacing:.05em}
+  details.notes p{font-size:13px;margin:10px 0 0}
+  .anchor{font-family:var(--mono);font-size:11px;color:var(--ink-4);text-decoration:none;margin-left:6px;opacity:0;transition:opacity .2s}
+  h2:hover .anchor,h3:hover .anchor{opacity:1}
+  @media (prefers-reduced-motion: reduce){
+    *{animation-duration:.01ms!important;transition-duration:.01ms!important;scroll-behavior:auto!important}
+  }
+  @media (max-width:680px){
+    .wrap{padding:28px 18px 60px}
+    h1{font-size:26px}
+    .grid2{grid-template-columns:1fr}
+    .audit{position:static;margin:24px 0 0;max-width:none}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="lead">
+  <p class="eyebrow">v0.4.0 · talk-html-plugin · Recap · single source of truth</p>
+  <h1>两套引擎合一,<span class="strike">不是新增</span>是收回。</h1>
+  <p class="claim">v0.4.0 把 <code>talk-ship</code> 从顶层独立 skill (<code>~/.claude/skills/talk-ship</code>) 收回 <strong>plugin 内置</strong>,统一 <strong>single source of truth</strong> = <code>PLUGIN_DEST/skills/{talk-html,talk-ship}/</code>。5 endpoint × 2 engine = 6 软链全指向同源。Cache 里残留的 <code>talk-profiler</code> 角色被砍(只在 cache 0.3.0 出现,源里从未存在)。3 处元数据 bump = 这次 release 的全部代码改动。</p>
+  <ul class="proofchain">
+    <li><b>proof</b>2-engine 拓扑图(SVG,5 endpoint 软链全对源)</li>
+    <li><b>proof</b>v0.3 → v0.4 元数据 diff 表(2 个 plugin.json + README)</li>
+    <li><b>proof</b>commit <code>a684222</code>(first commit on this source)</li>
+    <li><b>proof</b>router + role-routing.csv 派发表(/talk-ship 行已落)</li>
+    <li><b>proof</b>cache 状态对比(v0.3.0 stale / v0.4.0 待 refresh)</li>
+  </ul>
+</header>
+
+<h2 id="kpi">第一屏:KPI 卡 <a class="anchor" href="#kpi">#</a></h2>
+<div class="grid2">
+  <div class="card good">
+    <p class="k">核心断言</p>
+    <p class="v">收回 talk-ship,合源</p>
+    <p class="sub"><code>talk-ship</code> 早就活在源里(<code>skills/talk-ship/</code> 68K · 6月 4 日 21:03 创建);v0.4.0 只是把 version 从 0.3.0 抬到 0.4.0、描述里把 <code>/talk-ship</code> 写进去,让 plugin 自报家门时不再漏这一支。</p>
+  </div>
+  <div class="card bad">
+    <p class="k">砍掉的角色</p>
+    <p class="v">/talk-profiler</p>
+    <p class="sub">cache 0.3.0 里的第 9 命令 = <code>talk-profiler.md</code>(runtime profile,perf bench → KPI 一页)。源里从来没收过它;v0.4.0 砍掉后,cache refresh 时这条命令会消失,留给 perf 走 <code>/talk-cto</code>。</p>
+  </div>
+  <div class="card good">
+    <p class="k">真改的代码行数</p>
+    <p class="v">3 文件 · 7 行</p>
+    <p class="sub"><code>.claude-plugin/plugin.json</code> (version 1 行 + description 1 段 + keywords 7 行)、<code>.codex-plugin/plugin.json</code> 同款、<code>README.md</code> 1 行。其他都是 source 早已就位。</p>
+  </div>
+  <div class="card warn">
+    <p class="k">cache 状态</p>
+    <p class="v">v0.3.0 · stale</p>
+    <p class="sub"><code>~/.claude/plugins/cache/personal-talk-html/talk-html-plugin/0.3.0/</code> 仍含 <code>talk-profiler</code>、缺 <code>talk-ship</code>。需在 Claude Code 里跑 <code>/plugin update personal-talk-html</code>(或 <code>/exit</code> 重开)才拾起 v0.4.0。</p>
+  </div>
+</div>
+
+<h2 id="arch">2-engine 拓扑图(6 软链全对源)<a class="anchor" href="#arch">#</a></h2>
+<figure>
+<svg class="diagram" viewBox="0 0 880 460" role="img" aria-label="v0.4.0 两套引擎单源拓扑:plugin 内 skills/{talk-html,talk-ship} 是 source of truth,5 endpoint 软链(.claude/.codex/.agents × talk-html/talk-ship)全指向 plugin,顶层不再有 real directory">
+  <defs>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#3a3a3a"/>
+    </marker>
+  </defs>
+  <style>
+    .lbl{font:11px "SF Mono",ui-monospace,Menlo,monospace;fill:#3a3a3a}
+    .lblb{font:700 12px "SF Mono",ui-monospace,Menlo,monospace;fill:#1a1a1a}
+    .lblt{font:700 12px "Noto Serif SC",serif;fill:#1a1a1a}
+    .lblsub{font:10px "Noto Serif SC",serif;fill:#666}
+    .box{fill:#fff;stroke:#1a1a1a;stroke-width:1.2}
+    .boxp{fill:#fbfaf6;stroke:#8a2a2a;stroke-width:1.2}
+    .boxa{fill:#fff7e8;stroke:#a26b00;stroke-width:1.2}
+    .boxg{fill:#f3f8f3;fill-opacity:1;stroke:#2d6a3e;stroke-width:1.2}
+    .ln{stroke:#3a3a3a;stroke-width:1.1;fill:none}
+    .lnd{stroke:#9aa0a6;stroke-width:1;fill:none;stroke-dasharray:4 3}
+    .lnok{stroke:#2d6a3e;stroke-width:1.4;fill:none}
+  </style>
+
+  <!-- Source of truth (center) -->
+  <rect class="boxp" x="320" y="180" width="240" height="120" rx="3"/>
+  <text class="lblt" x="332" y="204">PLUGIN_DEST  (single source of truth)</text>
+  <text class="lblsub" x="332" y="220">/Users/liushiyuwin/plugins/talk-html-plugin/</text>
+  <rect class="box" x="332" y="232" width="216" height="28" rx="2"/>
+  <text class="lblb" x="342" y="250">skills/talk-html/</text>
+  <rect class="box" x="332" y="266" width="216" height="28" rx="2"/>
+  <text class="lblb" x="342" y="284">skills/talk-ship/</text>
+
+  <!-- Symlink endpoints (3 row × 2 col) -->
+  <text class="lblt" x="20" y="36">5 endpoints · ~/.claude / ~/.codex / ~/.agents / .claude-plugin / .codex-plugin · 2-hop direct</text>
+  <text class="lblsub" x="20" y="54">link_or_skip() in install.sh — 不复制文件,只 ln -s。</text>
+
+  <!-- Row 1: ~/.claude -->
+  <rect class="boxg" x="20" y="80" width="240" height="50" rx="2"/>
+  <text class="lblb" x="30" y="98">~/.claude/skills/</text>
+  <text class="lblsub" x="30" y="114">2 symlinks (talk-html + talk-ship)</text>
+  <text class="lbl" x="30" y="126" style="fill:#2d6a3e">already in place since 6/4 21:30</text>
+
+  <!-- Row 2: ~/.codex -->
+  <rect class="boxg" x="20" y="140" width="240" height="50" rx="2"/>
+  <text class="lblb" x="30" y="158">~/.codex/skills/</text>
+  <text class="lblsub" x="30" y="174">2 symlinks (talk-html + talk-ship)</text>
+  <text class="lbl" x="30" y="186" style="fill:#2d6a3e">already in place since 6/4 21:30</text>
+
+  <!-- Row 3: ~/.agents -->
+  <rect class="boxg" x="20" y="200" width="240" height="50" rx="2"/>
+  <text class="lblb" x="30" y="218">~/.agents/skills/</text>
+  <text class="lblsub" x="30" y="234">2 symlinks (legacy alias)</text>
+  <text class="lbl" x="30" y="246" style="fill:#666">install.sh 建,不一定有真实 skill 加载</text>
+
+  <!-- Marketplace -->
+  <rect class="box" x="620" y="80" width="240" height="80" rx="2"/>
+  <text class="lblb" x="630" y="98">personal-talk-html marketplace</text>
+  <text class="lblsub" x="630" y="114">/Users/liushiyuwin/plugins/</text>
+  <text class="lblsub" x="630" y="128">claude-personal-marketplace/</text>
+  <text class="lbl" x="630" y="142" style="fill:#2d6a3e">talk-html-plugin → source (symlink)</text>
+  <text class="lbl" x="630" y="156" style="fill:#666">lastUpdated: 2026-06-02 (cache stale)</text>
+
+  <!-- Cache (stale) -->
+  <rect class="boxa" x="620" y="200" width="240" height="80" rx="2"/>
+  <text class="lblb" x="630" y="218">cache 0.3.0 (STALE)</text>
+  <text class="lblsub" x="630" y="234">~/.claude/plugins/cache/</text>
+  <text class="lblsub" x="630" y="248">personal-talk-html/talk-html-plugin/0.3.0/</text>
+  <text class="lbl" x="630" y="262" style="fill:#a26b00">has talk-profiler · missing talk-ship</text>
+  <text class="lbl" x="630" y="276" style="fill:#a26b00">需 /plugin update</text>
+
+  <!-- Arrows: endpoints → source -->
+  <line class="lnok" x1="262" y1="105" x2="332" y2="246" marker-end="url(#arr)"/>
+  <line class="lnok" x1="262" y1="165" x2="332" y2="256" marker-end="url(#arr)"/>
+  <line class="ln" x1="262" y1="225" x2="332" y2="266" marker-end="url(#arr)"/>
+
+  <!-- Arrow: marketplace → source -->
+  <line class="ln" x1="620" y1="120" x2="560" y2="220" marker-end="url(#arr)"/>
+  <text class="lbl" x="564" y="170">symlink</text>
+
+  <!-- Arrow: source → cache (refresh path) -->
+  <line class="lnd" x1="560" y1="280" x2="620" y2="240" marker-end="url(#arr)"/>
+  <text class="lbl" x="568" y="276" style="fill:#a26b00">/plugin update</text>
+
+  <!-- Note -->
+  <text class="lblsub" x="20" y="430" style="font-size:10px">绿实线 = 已落地的 2-hop 软链(6 条,3 endpoint × 2 engine);橙虚线 = cache refresh 路径,等用户触发。Source 是真实文件,所有软链都指向它——无 3-hop 链、无复制。</text>
+  <text class="lblsub" x="20" y="446" style="font-size:10px;fill:#8a2a2a">红框 = plugin 内(SOT);绿框 = 顶层软链;橙框 = stale cache(用户需 refresh)。</text>
+</svg>
+<figcaption>图 1 · v0.4.0 两套引擎单源拓扑。<code>PLUGIN_DEST</code> = <code>/Users/liushiyuwin/plugins/talk-html-plugin/</code>,内含 <code>skills/talk-html/</code>(核心渲染)+ <code>skills/talk-ship/</code>(端到端录制)两套引擎。3 个顶层路径(<code>~/.claude</code> / <code>~/.codex</code> / <code>~/.agents</code>)下各有 2 条 symlink 指向 source,共 6 条绿实线。Marketplace 通过 <code>claude-personal-marketplace/talk-html-plugin → source</code> 间接挂上。Cache 0.3.0 是 stale(橙虚线),用户跑 <code>/plugin update personal-talk-html</code> 后变绿。</figcaption>
+</figure>
+
+<h2 id="diff">v0.3.0 → v0.4.0 元数据 diff(真正改的就这 3 行)<a class="anchor" href="#diff">#</a></h2>
+<table>
+  <thead><tr><th>文件</th><th>v0.3.0</th><th>v0.4.0</th><th>说明</th></tr></thead>
+  <tbody>
+    <tr>
+      <td><code>.claude-plugin/plugin.json</code></td>
+      <td><code>"version": "0.3.0"</code> · description 8 sub-commands</td>
+      <td><code>"version": "0.4.0"</code> · description 9 sub-commands 加 <code>/talk-ship</code> 一段</td>
+      <td>主 manifest。Plugin loader 拿这个判版本。</td>
+    </tr>
+    <tr>
+      <td><code>.claude-plugin/plugin.json</code> keywords</td>
+      <td>11 个(talk-html / router / role-aware / html-page / proof-matrix / evidence / gist / zh-CN / gpt-image / browse / auto-illustrate)</td>
+      <td>18 个(+ talk-ship / end-to-end / ship-video / user-journey / playwright / asciinema / 删 0 个)</td>
+      <td>让 <code>/plugin search</code> 命中 talk-ship 类目。</td>
+    </tr>
+    <tr>
+      <td><code>.codex-plugin/plugin.json</code></td>
+      <td><code>"version": "0.3.0"</code> · 短 description</td>
+      <td><code>"version": "0.4.0"</code> · 加 v0.4 talk-ship engine 概述</td>
+      <td>Codex 侧 packaging 同步。Codex SDK 也读这个 manifest。</td>
+    </tr>
+    <tr>
+      <td><code>README.md</code> 第 152 行</td>
+      <td>「<code>v0.4</code> 起再加入第二套引擎 <code>skills/talk-ship/</code>」</td>
+      <td>「<code>v0.4</code> 加入第二套引擎 <code>skills/talk-ship/</code>」</td>
+      <td>未来时 → 过去时。文档对齐 release。</td>
+    </tr>
+    <tr>
+      <td>Cache 0.3.0 内容</td>
+      <td>commands: 10(含 <code>talk-profiler</code>) · skills: 4(含 <code>talk-profiler</code>)</td>
+      <td>refresh 后 = 10(含 <code>talk-ship</code>) · 4(含 <code>talk-ship</code>),<strong>talk-profiler 消失</strong></td>
+      <td>本地 cache 重建,真实换内容。</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2 id="seq">时序:v0.3.0 顶层 talk-ship → v0.4.0 收回 plugin<a class="anchor" href="#seq">#</a></h2>
+<figure>
+<svg class="diagram" viewBox="0 0 880 320" role="img" aria-label="v0.3.0 顶层独立 talk-ship + cache 0.3.0 talk-profiler 并存 → v0.4.0 plugin 内 talk-ship + 砍 talk-profiler + 6 软链对源">
+  <style>
+    .lane{fill:#fbfaf6;stroke:#d6cfb8;stroke-width:1}
+    .laneh{font:700 11px "SF Mono",ui-monospace,monospace;fill:#1a1a1a;letter-spacing:.08em}
+    .lbl{font:11px "Noto Serif SC",serif;fill:#3a3a3a}
+    .lblm{font:10px "SF Mono",ui-monospace,monospace;fill:#666}
+    .msg{stroke:#3a3a3a;stroke-width:1.1;fill:none}
+    .msgok{stroke:#2d6a3e;stroke-width:1.4;fill:none}
+    .msgbad{stroke:#8a2a2a;stroke-width:1.4;fill:none}
+    .msgarch{stroke:#a26b00;stroke-width:1.2;fill:none;stroke-dasharray:4 3}
+    .dot{fill:#1a1a1a}
+    .dotok{fill:#2d6a3e}
+    .dotbad{fill:#8a2a2a}
+    .boxa{fill:#fff7e8;stroke:#a26b00;stroke-width:1}
+    .boxb{fill:#f3f8f3;stroke:#2d6a3e;stroke-width:1}
+  </style>
+
+  <!-- Lanes -->
+  <rect class="lane" x="20" y="40" width="200" height="240" rx="2"/>
+  <text class="laneh" x="32" y="60">顶层独立 skill</text>
+  <text class="lblm" x="32" y="76">2026-06-04 21:03 之前</text>
+
+  <rect class="lane" x="240" y="40" width="200" height="240" rx="2"/>
+  <text class="laneh" x="252" y="60">cache 0.3.0 (stale)</text>
+  <text class="lblm" x="252" y="76">~/.claude/plugins/cache/...</text>
+
+  <rect class="lane" x="460" y="40" width="200" height="240" rx="2"/>
+  <text class="laneh" x="472" y="60">plugin source (SOT)</text>
+  <text class="lblm" x="472" y="76">/Users/liushiyuwin/...</text>
+
+  <rect class="lane" x="680" y="40" width="180" height="240" rx="2"/>
+  <text class="laneh" x="692" y="60">v0.4.0 (now)</text>
+  <text class="lblm" x="692" y="76">2026-06-05 · 11:50</text>
+
+  <!-- Lines of life -->
+  <line class="msg" x1="120" y1="100" x2="120" y2="270" stroke-dasharray="2 3"/>
+  <line class="msg" x1="340" y1="100" x2="340" y2="270" stroke-dasharray="2 3"/>
+  <line class="msg" x1="560" y1="100" x2="560" y2="270" stroke-dasharray="2 3"/>
+  <line class="msgok" x1="770" y1="100" x2="770" y2="270"/>
+
+  <!-- Lane 1: 顶层 talk-ship -->
+  <circle class="dot" cx="120" cy="120" r="4"/>
+  <text class="lbl" x="132" y="124">~/.claude/skills/talk-ship/</text>
+  <text class="lbl" x="132" y="140">68K · standalone</text>
+
+  <circle class="dotok" cx="120" cy="180" r="5"/>
+  <text class="lbl" x="36" y="172">2026-06-04 21:30</text>
+  <text class="lbl" x="36" y="188">install.sh 把顶层那一份</text>
+  <text class="lbl" x="36" y="204">换成 symlink → plugin</text>
+  <text class="lbl" x="36" y="220" style="fill:#2d6a3e;font-size:10px">顶层不再是 real dir</text>
+
+  <circle class="dotok" cx="120" cy="260" r="5"/>
+  <text class="lbl" x="36" y="252">今天 (现在) — symlink</text>
+  <text class="lbl" x="36" y="268" style="fill:#2d6a3e">目标 = source/skills/talk-ship/</text>
+
+  <!-- Lane 2: cache 0.3.0 -->
+  <circle class="dotbad" cx="340" cy="120" r="5"/>
+  <text class="lbl" x="256" y="124">/talk-profiler 命令</text>
+  <text class="lbl" x="256" y="140" style="fill:#8a2a2a;font-size:10px">runtime profile role</text>
+
+  <circle class="dot" cx="340" cy="180" r="4"/>
+  <text class="lbl" x="256" y="184">/talk-ship 缺失</text>
+  <text class="lbl" x="256" y="200" style="fill:#a26b00;font-size:10px">plugin source 已有,cache 没拉</text>
+
+  <circle class="dotbad" cx="340" cy="260" r="5"/>
+  <text class="lbl" x="256" y="252">stale · 需 /plugin update</text>
+  <text class="lbl" x="256" y="268" style="fill:#8a2a2a">refresh 后:talk-profiler 消失</text>
+
+  <!-- Lane 3: plugin source -->
+  <circle class="dot" cx="560" cy="120" r="4"/>
+  <text class="lbl" x="476" y="124">skills/talk-ship/ 已就位</text>
+  <text class="lbl" x="476" y="140">(6/4 21:03 创建,68K)</text>
+
+  <circle class="dot" cx="560" cy="170" r="4"/>
+  <text class="lbl" x="476" y="174">commands/talk-ship.md</text>
+  <text class="lbl" x="476" y="190">role-routing.csv 已有 ship 行</text>
+
+  <circle class="dot" cx="560" cy="220" r="4"/>
+  <text class="lbl" x="476" y="224">talk-html.md router 已</text>
+  <text class="lbl" x="476" y="240">dispatch → /talk-ship</text>
+
+  <circle class="dotok" cx="560" cy="270" r="5"/>
+  <text class="lbl" x="476" y="262">a684222 · version bump</text>
+  <text class="lbl" x="476" y="278" style="fill:#2d6a3e">0.3.0 → 0.4.0 · first commit</text>
+
+  <!-- Lane 4: v0.4.0 (now) -->
+  <rect class="boxb" x="690" y="120" width="160" height="160" rx="2"/>
+  <text class="lbl" x="700" y="142">single source of truth</text>
+  <text class="lbl" x="700" y="158">5 endpoint × 2 engine</text>
+  <text class="lbl" x="700" y="174">= 6 软链对源</text>
+  <text class="lbl" x="700" y="194" style="font-size:10px">无需复制文件</text>
+  <text class="lbl" x="700" y="210" style="font-size:10px">无需 3-hop 链</text>
+  <text class="lbl" x="700" y="232" style="fill:#2d6a3e">顶层 = symlink</text>
+  <text class="lbl" x="700" y="248">plugin = SOT</text>
+  <text class="lbl" x="700" y="268" style="font-size:10px">cache 待 refresh</text>
+
+  <text class="lbl" x="20" y="298" style="font-size:10px;fill:#a26b00">橙虚线/橙字 = 待用户刷新 cache;绿实线 = 已落地;红点 = 应被丢弃/修正。</text>
+</svg>
+<figcaption>图 2 · 4 lane 时序。<b>Lane 1 顶层独立 skill</b> —— 6/4 21:03 之前 <code>~/.claude/skills/talk-ship/</code> 是真目录(68K),6/4 21:30 install.sh 跑过一次变成 symlink → plugin 源,从此顶层再无 real dir。<b>Lane 2 cache 0.3.0</b> —— 还停留在更早的版本:有 <code>talk-profiler</code>(9 号命令,runtime profile role)、<strong>无</strong> <code>talk-ship</code>。refresh 后 <code>talk-profiler</code> 消失、<code>talk-ship</code> 出现。<b>Lane 3 plugin source</b> —— 6/4 21:03 <code>skills/talk-ship/</code> 已创建;之后 router/CSV/command 全部就位。今天我做的是 <code>a684222</code>:把 version 抬到 0.4.0、把 <code>/talk-ship</code> 写进 description、git init 出第一条基线。<b>Lane 4 v0.4.0 now</b> —— 6 软链对源、cache 待刷新。</figcaption>
+</figure>
+
+<h2 id="timeline">commit 时间线(v0.4.0 · first commit on this source)<a class="anchor" href="#timeline">#</a></h2>
+<ul class="timeline">
+  <li class="head"><span class="hash">a684222</span><span class="msg">feat: v0.4.0 — add talk-ship engine (end-to-end user journey capture)</span><span class="who">Liu Shiyu</span><span class="who">— 127 files, +31526 lines (first commit; 3 metadata bumps + 124 files of pre-existing source content)</span></li>
+</ul>
+
+<p>这是这个 source 仓的 <strong>第一次 commit</strong> —— 之前是非 git 目录(今天 <code>git init</code> 才有 <code>.git/</code>)。<code>a684222</code> 一并把仓里所有现存文件入库,所以 +31526 行是「仓的全部内容」,而不是「v0.4.0 净增」。真正「v0.4.0 净增」只有 <code>.claude-plugin/plugin.json</code> 改 1 段 description + version、<code>.codex-plugin/plugin.json</code> 同款、<code>README.md</code> 改 1 行 —— 共 3 文件、7 行可见改动。</p>
+
+<h2 id="why">为什么「收回」是正确答案,不是「新增」<a class="anchor" href="#why">#</a></h2>
+<p>「<code>talk-ship</code> 之前在顶层独立 skill」听上去像「我们以前没做这功能,v0.4.0 才加」。错。<code>skills/talk-ship/</code>(68K,SKILL.md + scripts + templates + examples + check-canon.sh) <strong>早就</strong>在 plugin source 里,创建于 6/4 21:03。<code>commands/talk-ship.md</code> 也早就写好。<code>commands/talk-html.md</code> router 8 处引用 <code>/talk-ship</code>。<code>skills/talk-html/role-routing.csv</code> 第 32 行 ship row 也早已就位。<code>install.sh</code> 也早就建好 6 条 symlink。</p>
+<p>真正缺的只是 <strong>plugin 自报家门时漏了一支</strong>:<code>.claude-plugin/plugin.json</code> 的 description 还说「8 sub-commands」、还停在 0.3.0。这导致:</p>
+<ul>
+  <li>在 Claude Code 插件浏览器里看不到 <code>/talk-ship</code>(因为 description 里没提)</li>
+  <li>关键词搜索 plugin 时 <code>talk-ship</code> / <code>end-to-end</code> / <code>user-journey</code> 都不命中</li>
+  <li>cache reload 后看到 0.4.0 才会去拉新版本,之前一直停在 0.3.0 的旧 cache</li>
+</ul>
+<p>v0.4.0 的全部工作 = 把这 3 个 metadata 修对。其余文件不动,因为它们在 6/4 21:03 那个 commit(非 git,只在文件系统)里就已经写完。</p>
+
+<h2 id="cache">cache 状态对比(用户需 refresh)<a class="anchor" href="#cache">#</a></h2>
+<table>
+  <thead><tr><th>位置</th><th>version</th><th>commands</th><th>skills</th><th>状态</th></tr></thead>
+  <tbody>
+    <tr>
+      <td><code>PLUGIN_DEST</code> source</td>
+      <td>0.4.0</td>
+      <td>10(含 <code>talk-ship</code>,无 <code>talk-profiler</code>)</td>
+      <td>4(<code>browse</code> / <code>gpt-image</code> / <code>talk-html</code> / <code>talk-ship</code>)</td>
+      <td><span style="color:#2d6a3e;font-weight:700">SOT</span></td>
+    </tr>
+    <tr>
+      <td><code>~/.claude/plugins/cache/personal-talk-html/talk-html-plugin/0.3.0/</code></td>
+      <td>0.3.0</td>
+      <td>10(含 <code>talk-profiler</code>,无 <code>talk-ship</code>)</td>
+      <td>4(含 <code>talk-profiler</code>,无 <code>talk-ship</code>)</td>
+      <td><span style="color:#a26b00;font-weight:700">STALE · 需 refresh</span></td>
+    </tr>
+    <tr>
+      <td><code>~/.claude/skills/talk-ship</code></td>
+      <td>—</td>
+      <td>—</td>
+      <td>symlink → <code>PLUGIN_DEST/skills/talk-ship/</code></td>
+      <td><span style="color:#2d6a3e;font-weight:700">OK · 2-hop direct</span></td>
+    </tr>
+    <tr>
+      <td><code>~/.codex/skills/talk-ship</code></td>
+      <td>—</td>
+      <td>—</td>
+      <td>symlink → <code>PLUGIN_DEST/skills/talk-ship/</code></td>
+      <td><span style="color:#2d6a3e;font-weight:700">OK · 2-hop direct</span></td>
+    </tr>
+  </tbody>
+</table>
+
+<h3>refresh 操作(任选其一)</h3>
+<pre>1. 标准做法(推荐):
+   在 Claude Code 里跑  /plugin update personal-talk-html
+
+2. 重启法:
+   /exit  关掉当前 session 再重开 —— 启动时会自动 reload
+
+3. 手动法(force rebuild):
+   rm -rf ~/.claude/plugins/cache/personal-talk-html/
+   下次启动 plugin loader 会从 marketplace 拉 source 重建
+
+4. 强行覆盖(不推荐):
+   cp -R /Users/liushiyuwin/plugins/talk-html-plugin/* \
+         ~/.claude/plugins/cache/personal-talk-html/talk-html-plugin/0.3.0/
+   注意:cache 目录名仍叫 0.3.0,plugin.json 里写 0.4.0 —— 版本号字段会变,但 cache
+   目录路径不变,plugin loader 拿 cache 路径 + 内部 plugin.json version 对照判 stale。</pre>
+
+<h2 id="todo">v0.5+ 留口子<a class="anchor" href="#todo">#</a></h2>
+<ul>
+  <li><strong>git remote + push</strong> —— source 现在只有本地 <code>.git/</code>。要 <code>git push -u origin main</code> 把 a684222 推上 <code>github.com/LiuShiyuMath/talk-html-plugin</code>(需先确认远端无冲突 —— 那边可能已经有历史 commit;若冲突 → 先 <code>git pull --rebase</code> 再 push)。</li>
+  <li><strong>cache 重建校验</strong> —— refresh 完后 <code>ls ~/.claude/plugins/cache/personal-talk-html/talk-html-plugin/*/commands/ | wc -l</code> 应回到 10 且含 <code>talk-ship.md</code>、<strong>无</strong> <code>talk-profiler.md</code>。</li>
+  <li><strong>v0.4.1 备选</strong> —— 收 talk-profiler 之后,/talk-cto 已能吃 perf 任务;若 perf 反馈说「想要更直白的 profile 图」,可考虑 v0.4.1 拆出 <code>talk-profile</code> 命令(只取 N=10 benchmark + chart,不做 ship 录像)。当前不需要。</li>
+  <li><strong>顶层 ~/.agents/skills/ 是否要真用</strong> —— install.sh 给 3 个 endpoint 建 symlink,但只有 <code>~/.claude/skills/</code> 和 <code>~/.codex/skills/</code> 被真实 harness 加载;~/.agents 是历史 alias,无对应 harness。v0.5+ 可考虑删掉 install.sh 里这一行节省 2 条 dead symlink。</li>
+  <li><strong>install.sh 备份语义</strong> —— 当前 <code>backup_if_present</code> 把已有 dir 改名 <code>*.bak.&lt;timestamp&gt;</code>,但只 backup <code>PLUGIN_DEST</code>,不 backup 顶层 symlink 的目标(本来也是 plugin 内,所以 backup 等价)。OK,但要给用户文档说明「refresh 后如果旧的 PLUGIN_DEST 还在 .bak.XXX,可手动删」。</li>
+</ul>
+
+<details class="notes">
+  <summary>verification notes(限制与未覆盖)</summary>
+  <p>1. <strong>session_id 未拿到</strong>:<code>CLAUDE_SESSION_ID</code> 环境变量本会话未设,audit pill 显示 <code>not-set</code>。合法(契约允许),但 <code>--resume</code> 会失效 —— 想续改此页请用 slug 召回(<code>bash ~/.agents/skills/talk-html/recall.sh v040-plugin-adds-talk-ship-engine</code>)。</p>
+  <p>2. <strong>source 仓此前非 git 目录</strong>:<code>a684222</code> 是这次 <code>git init</code> 后的第一笔 commit,没历史可比。所以「commit 时间线」只有 1 行;真正的 v0.4.0 净增 7 行 metadata 改动也是从 diff(对比 mental model 的 0.3.0 → 实际 0.4.0 plugin.json)推出的,而不是从 <code>git diff 0.3.0..0.4.0</code> 推出。</p>
+  <p>3. <strong>cache refresh 未在本会话触发</strong>:cache 状态表里第二行是 stale,本 recap 没让它真的去拉 v0.4.0。用户在 Claude Code 里跑 <code>/plugin update personal-talk-html</code> 后状态才变绿。跑完可以再召一次 talk-html 生成一份「refresh 后的 v0.4.0 alive」recap 做交叉验证。</p>
+  <p>4. <strong>talk-profiler 到底是什么</strong>:cache 0.3.0 的 description 写过 —— 「<code>/talk-profiler</code> is the runtime-profile role: drop a dev-only profiler (<code>performance.now</code> + <code>performance.memory</code> + <code>PerformanceObserver</code>), drive a Playwright journey, run N=10 stage benchmarks, and render a one-pager with KPI grid + heap/api charts + 4-frame MP4」。本质上是个 perf benchmark 录像 + 4 帧 MP4。砍它的理由:talk-cto 已能吃 perf,benchmark chart 是它的必看 proof 形态之一;talk-profiler 是单点功能,没强到需要独立命令。</p>
+  <p>5. <strong>talk-ship 实际未被本会话录用过</strong>:本 recap 只描述了 talk-ship 怎么进 plugin、cache 怎么 refresh,但没有真的用 <code>/talk-ship</code> 录一段 user journey 做 smoke test。要做的话:随便起一个本地 web demo(比如 <code>python -m http.server 8000</code> + 一段交互),用 <code>/talk-ship "recording the homepage interaction"</code> 让 agent 走 Playwright codegen 录一段。算 v0.4.0 的 PoC。</p>
+</details>
+
+<footer class="meta">
+<p><b>talk-html-meta</b> · session_id=<code>not-set</code>(本会话未设 CLAUDE_SESSION_ID) · branch=<code>main</code> · template=<code>recap</code> · generated_at=<code>2026-06-05T03:50:04Z</code></p>
+<p><b>real sources</b>(cwd=<code>/Users/liushiyuwin/Documents</code>,但所有源都指向 plugin repo):</p>
+<ul style="margin:6px 0 0 18px;padding:0">
+  <li><code>/Users/liushiyuwin/plugins/talk-html-plugin/.claude-plugin/plugin.json</code> · 0.4.0 · description 9 sub-commands</li>
+  <li><code>/Users/liushiyuwin/plugins/talk-html-plugin/.codex-plugin/plugin.json</code> · 0.4.0</li>
+  <li><code>/Users/liushiyuwin/plugins/talk-html-plugin/README.md</code> · line 152 changed to past tense</li>
+  <li><code>/Users/liushiyuwin/plugins/talk-html-plugin/skills/talk-html/role-routing.csv</code> · line 32 ship row</li>
+  <li><code>/Users/liushiyuwin/plugins/talk-html-plugin/commands/talk-html.md</code> · 8 references to <code>talk-ship</code></li>
+  <li><code>/Users/liushiyuwin/plugins/talk-html-plugin/commands/talk-ship.md</code></li>
+  <li><code>/Users/liushiyuwin/plugins/talk-html-plugin/skills/talk-ship/</code> · 68K · SKILL.md + scripts + templates + examples + check-canon.sh</li>
+  <li><code>/Users/liushiyuwin/plugins/talk-html-plugin/install.sh</code> · 2-engine install with 6 symlinks (link_or_skip)</li>
+  <li><code>git log</code> · commit a684222 (first commit on this source)</li>
+  <li><code>~/.claude/skills/talk-ship</code> · symlink → <code>PLUGIN_DEST/skills/talk-ship/</code> · since 6/4 21:30</li>
+  <li><code>~/.codex/skills/talk-ship</code> · symlink → <code>PLUGIN_DEST/skills/talk-ship/</code> · since 6/4 21:30</li>
+  <li><code>~/.claude/plugins/cache/personal-talk-html/talk-html-plugin/0.3.0/</code> · STALE · 0.3.0 with talk-profiler</li>
+</ul>
+<p style="margin-top:14px"><b>次要轨道</b>:<b>/talk-cto release-milestone</b> —— v0.4.0 是一次 release bump,核心证据是 plugin.json 改动 + cache 状态 + 6 软链对源拓扑。本 recap 是主要归档;<code>/talk-cto</code> 视角下没有新的架构改动(只是 metadata),所以不另起一页。</p>
+</footer>
+
+</div><!--/.wrap-->
+
+<!-- audit pill -->
+<aside class="audit" role="status" aria-label="audit pill">
+  <div><b>v0.4.0 recap</b> · session not-set</div>
+  <div class="row">
+    <span id="audit-id">id: not-set</span>
+    <button type="button" onclick="(async()=>{try{await navigator.clipboard.writeText('not-set');this.textContent='copied';}catch(e){this.textContent='err';}})()">copy id</button>
+  </div>
+  <div class="row">
+    <button type="button" onclick="(async()=>{const s='claude --resume not-set';try{await navigator.clipboard.writeText(s);this.textContent='copied';}catch(e){this.textContent='err';}})()">resume</button>
+    <span style="color:#aaa">slug: v040-plugin-adds-talk-ship-engine</span>
+  </div>
+  <div class="tip">无法 resume 时:bash ~/.agents/skills/talk-html/recall.sh v040-plugin-adds-talk-ship-engine</div>
+</aside>
+
+<!-- 继续修改 bar -->
+<section class="continuebar" aria-label="继续修改">
+  <h3>继续修改这一页</h3>
+  <p style="margin:4px 0 0;font-size:13px;color:#3a3a3a">在下面写一行修改要求,点「复制续修指令」,粘到 Claude/Codex 即可。</p>
+  <div class="instr">
+    <input id="instr" type="text" placeholder="例:把 2-engine 拓扑图里 cache 那块标成「refresh 后变绿」" />
+    <button type="button" id="copybtn">复制续修指令</button>
+  </div>
+  <p class="hint">复制内容: <code>claude --resume not-set "继续修改我用 talk-html 生成的产物(slug: v040-plugin-adds-talk-ship-engine;本地 /Users/liushiyuwin/plugins/talk-html-plugin/skills/talk-html/v040-plugin-adds-talk-ship-engine-20260605-115004.html;若会话已失效,先跑 bash ~/.agents/skills/talk-html/recall.sh v040-plugin-adds-talk-ship-engine 定位它)。修改要求:INSTR。改完按 talk-html 流程重新发布 gist 并打印四个 URL。"</code></p>
+</section>
+
+<script>
+(function(){
+  var btn=document.getElementById('copybtn'),inp=document.getElementById('instr');
+  if(!btn||!inp) return;
+  btn.addEventListener('click', async function(){
+    var tpl='claude --resume not-set "继续修改我用 talk-html 生成的产物(slug: v040-plugin-adds-talk-ship-engine;本地 /Users/liushiyuwin/plugins/talk-html-plugin/skills/talk-html/v040-plugin-adds-talk-ship-engine-20260605-115004.html;若会话已失效,先跑 bash ~/.agents/skills/talk-html/recall.sh v040-plugin-adds-talk-ship-engine 定位它)。修改要求:INSTR。改完按 talk-html 流程重新发布 gist 并打印四个 URL。"';
+    var final=tpl.replace('INSTR', inp.value || '(填这里)');
+    try{ await navigator.clipboard.writeText(final); btn.textContent='已复制'; setTimeout(function(){btn.textContent='复制续修指令';}, 1800); }
+    catch(e){ btn.textContent='复制失败,请手动'; }
+  });
+})();
+</script>
+</body>
+</html>

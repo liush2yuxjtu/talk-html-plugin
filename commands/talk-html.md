@@ -1,5 +1,5 @@
 ---
-description: Router for talk-html. Look at the page topic, infer the artifact_type from skills/talk-html/role-routing.csv, then dispatch to /talk-ux, /talk-ceo, /talk-data, /talk-reviewer, /talk-cto, /talk-qa, /talk-docs, or /talk-legal. Use when the user says talk-html, 用 html 解释, 做成一页, make a page, publish as gist, or asks to render something for a specific audience. Pass --image to auto-illustrate the page (配图) after publishing, via the bundled gpt-image + browse skills.
+description: Router for talk-html. Look at the page topic, infer the artifact_type from skills/talk-html/role-routing.csv, then dispatch to /talk-ux, /talk-ceo, /talk-data, /talk-reviewer, /talk-cto, /talk-qa, /talk-docs, or /talk-legal. For ship-bound end-to-end user journey recordings, dispatches to /talk-ship. Use when the user says talk-html, 用 html 解释, 做成一页, make a page, publish as gist, or asks to render something for a specific audience. Pass --image to auto-illustrate the page (配图) after publishing, via the bundled gpt-image + browse skills.
 ---
 
 ## `--image` 标志 — 发布后自动配图
@@ -26,21 +26,27 @@ description: Router for talk-html. Look at the page topic, infer the artifact_ty
        │           │           │           │           │
        └────┬──────┴────┬──────┴────┬──────┴────┬──────┘
             ▼           ▼           ▼           ▼
-       /talk-qa   /talk-docs  /talk-legal       …
-            │           │           │
-            └───────────┴───────────┘
-                        │
-                        ▼
-              skills/talk-html (核心渲染管线)
-              preflight → resolve → template
-              → real-content grounding → embed
-                 real recording (non-static)
-              → publish → recall
+       /talk-qa   /talk-docs  /talk-legal   /talk-ship
+            │           │           │           │
+            └───────────┴─────┬─────┘           │
+                              │                 │
+                              ▼                 ▼
+                    skills/talk-html     skills/talk-ship
+                    (静态页引擎)         (端到端录像引擎)
+                    preflight → resolve   persona + stages
+                    → template            → Playwright / tmux
+                    → real-content        → MP4 + contact sheet
+                      grounding           → fold into talk-html
+                    → embed real          → publish → recall
+                      recording
+                    → publish → recall
 ```
 
 # /talk-html — 角色路由
 
 `/talk-html` 本身不渲染页面。它做一件事：**先决定这页是给谁看**，再分派到对应的 role 子命令。
+插件现在捆绑两台引擎：8 个 role 子命令共用 `skills/talk-html`（静态页 + 真内容 grounding + 嵌入真 recording），
+ship-bound 端到端录像走 `skills/talk-ship`（Playwright / tmux 抓 persona + stages → MP4 + contact sheet，再折叠回 talk-html 一页）。
 
 子命令负责锁住三件不可让步的东西：
 1. **必看 proof 形态** — `who_must_see` 这一栏的人**只接受**这种证据（reviewer 只读 diff；UX 只看 recording；perf 只看 benchmark chart）。
@@ -77,6 +83,13 @@ cat ${CLAUDE_PLUGIN_ROOT}/skills/talk-html/role-routing.csv
 | `/talk-qa` | Interactive TUI · CLI output · Bug fix · Test result · Permission / admin flow |
 | `/talk-docs` | Documentation |
 | `/talk-legal` | Security fix · Legal/compliance copy |
+| `/talk-ship` | ship-bound / 端到端 ship 录像 |
+
+## /talk-ship 子命令
+
+当 artifact_type 是 **ship-bound / 端到端 ship 录像**（典型触发词：「ship it」「录个端到端 demo」「端到端跑一遍」「GA 录屏」「上线前录一下」「release demo」「journey video」），路由直接把控制权交给 `/talk-ship`，
+不再走 8 个 role 子命令。原因：ship proof 的形态是 **persona + stages + 真 user journey 录像 + contact sheet + checklist**，不是单页静态文字。
+完整工作流见 `commands/talk-ship.md`；talk-ship 跑完会把 MP4 / contact sheet / checklist 折叠进 talk-html 一页作为最强证据。
 
 ## 多角色情况
 

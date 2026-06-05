@@ -1,0 +1,44 @@
+{
+  "name": "talk-html-plugin",
+  "version": "0.4.0",
+  "description": "Codex packaging for LiuShiyuMath/talk-html-plugin v0.4.0: turn conversation context into Chinese, evidence-grounded HTML one-pagers. v0.4 adds the talk-ship engine — end-to-end user journey capture (Playwright / tmux + asciinema → MP4 + contact sheet) folded back into a one-pager as the strongest ship evidence.",
+  "author": {
+    "name": "LiuShiyuMath"
+  },
+  "homepage": "https://github.com/LiuShiyuMath/talk-html-plugin",
+  "repository": "https://github.com/LiuShiyuMath/talk-html-plugin",
+  "license": "MIT",
+  "keywords": [
+    "talk-html",
+    "talk-ship",
+    "html-page",
+    "one-pager",
+    "gist",
+    "zh-CN",
+    "evidence",
+    "end-to-end",
+    "user-journey",
+    "playwright",
+    "asciinema"
+  ],
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Talk HTML Plugin",
+    "shortDescription": "Make recallable, shareable HTML one-pagers from a conversation.",
+    "longDescription": "Use talk-html from Codex to create Simplified Chinese HTML one-pagers grounded in real source material, preview them locally, publish them to GitHub Gist, and recall prior pages later.",
+    "developerName": "LiuShiyuMath",
+    "category": "Developer Tools",
+    "capabilities": [
+      "Read",
+      "Write",
+      "Browser",
+      "Publish"
+    ],
+    "websiteURL": "https://github.com/LiuShiyuMath/talk-html-plugin",
+    "defaultPrompt": [
+      "用 talk-html 把这段对话做成一页 HTML",
+      "把这个复盘发布成一个可分享的 HTML 页面",
+      "回看最近的 talk-html 页面"
+    ]
+  }
+}
