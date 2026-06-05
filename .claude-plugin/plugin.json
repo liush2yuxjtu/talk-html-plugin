@@ -1,7 +1,7 @@
 {
   "name": "talk-html-plugin",
   "version": "0.4.0",
-  "description": "Talk to humans in HTML — role-aware. /talk-html routes the page to one of 9 audience-specific sub-commands (/talk-ux, /talk-ceo, /talk-data, /talk-reviewer, /talk-cto, /talk-qa, /talk-docs, /talk-legal, /talk-ship). Each role hardcodes the audience, the proof modality they must see, the build tools, the programmatic evaluation tools, and the deterministic CI gate from the proof-build-eval matrix. /talk-ship is the ship-bound role: capture a real end-to-end user journey with Playwright (browser) or tmux + asciinema (terminal), stitch into MP4 + contact sheet + ship-checklist, then fold back into a talk-html one-pager as the strongest evidence. Pages are grounded in real content, embed real recordings for anything non-static, render in zh-CN, preview locally, and publish to a GitHub gist by default. Pass --image to auto-illustrate a published page via the bundled gpt-image + browse skills (fresh ChatGPT chat, one-sentence link prompt, download all).",
+  "description": "用 HTML 说话,不要用聊天滚动条 — Claude Code + Codex 双端插件。/talk-html 路由器按观众分诊到 9 role(ux/cto/qa/docs/legal/ceo/data/reviewer/ship),每锁 proof 形态 + build/eval 工具 + gate。2 引擎(渲染+端到端录制),6 软链对源,zh-CN,evidence-grounded,gist 回看。",
   "author": {
     "name": "LiuShiyuMath"
   },
