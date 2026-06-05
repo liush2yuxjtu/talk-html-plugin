@@ -1,5 +1,18 @@
 # talk-html-plugin
 
+> **Claude Code / Codex 插件 · 用 HTML 说话,不要用聊天滚动条 — `/talk-html` 路由器按观众分诊 + 9 个 role 命令 + `/talk-ship` 端到端用户旅程录制引擎 · zh-CN 渲染,evident-grounded,一键 gist 分享。**
+
+<p align="center">
+  <img alt="v0.4.0" src="https://img.shields.io/badge/version-v0.4.0-8a2a2a">
+  <img alt="license" src="https://img.shields.io/badge/license-MIT-2d6a3e">
+  <img alt="claude code" src="https://img.shields.io/badge/claude--code-plugin-1a1a1a">
+  <img alt="codex" src="https://img.shields.io/badge/codex-compatible-1a1a1a">
+  <img alt="commands" src="https://img.shields.io/badge/commands-10-a26b00">
+  <img alt="skills" src="https://img.shields.io/badge/engines-4-5a3a8a">
+  <img alt="zh-CN" src="https://img.shields.io/badge/lang-zh--CN-8a2a2a">
+  <img alt="engines" src="https://img.shields.io/badge/engines-Playwright_+_ffmpeg_+_asciinema-3a3a3a">
+</p>
+
 ```
                 /talk-html  (router)
                       │
@@ -24,10 +37,6 @@
         preflight→resolve→template→         persona→stages→Playwright/
         grounding→embed→publish→recall      tmux→MP4 + contact sheet
 ```
-
-**用 HTML 说话，不要用聊天滚动条——而且按观众分诊。**
-
-一个 Claude Code 插件。它把 agent 的长回答变成一页打磨过的 HTML，并根据**这页是给谁看**自动选择正确的证据形态、构建工具、机器评测工具和 gate 阈值。
 
 落地页（GitHub Pages）：<https://liushiyumath.github.io/talk-html-plugin/>
 
