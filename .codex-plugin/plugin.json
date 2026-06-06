@@ -1,7 +1,7 @@
 {
   "name": "talk-html-plugin",
-  "version": "0.4.0",
-  "description": "Codex packaging for talk-html-plugin v0.4.0: turn conversation into Chinese, evidence-grounded HTML one-pagers, role-aware router + 9 commands, /talk-ship engine for end-to-end user journey capture. --image auto-illustrates via bundled gpt-image + browse skills.",
+  "version": "0.4.1",
+  "description": "Codex packaging for talk-html-plugin v0.4.1: turn conversation into Chinese, evidence-grounded HTML one-pagers, role-aware router + 10 commands, /talk-ship engine for end-to-end user journey capture. --image auto-illustrates via bundled gpt-image + browse skills.",
   "author": {
     "name": "LiuShiyuMath"
   },

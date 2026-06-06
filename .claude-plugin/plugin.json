@@ -1,11 +1,13 @@
 {
   "name": "talk-html-plugin",
-  "version": "0.4.0",
-  "description": "用 HTML 说话,不要用聊天滚动条 — Claude Code + Codex 双端插件。/talk-html 路由器按观众分诊到 9 role(ux/cto/qa/docs/legal/ceo/data/reviewer/ship),每锁 proof 形态 + build/eval 工具 + gate。2 引擎(渲染+端到端录制),6 软链对源,zh-CN,evidence-grounded,gist 回看。",
+  "version": "0.4.1",
+  "description": "用 HTML 说话,不要用聊天滚动条 — Claude Code + Codex 双端插件。/talk-html 路由器按观众分诊到 9 role(ux/cto/qa/docs/legal/ceo/data/reviewer/ship),每锁 proof 形态 + build/eval 工具 + gate。2 引擎(渲染+端到端录制),6 软链对源,zh-CN,evidence-grounded,gist 回看。v0.4.1: commands/ 9 个全显式列出 + skills/ 整目录暴露,匹配 plugin-structure auto-discovery。",
   "author": {
-    "name": "LiuShiyuMath"
+    "name": "LiuShiyuMath",
+    "url": "https://github.com/LiuShiyuMath"
   },
   "homepage": "https://github.com/LiuShiyuMath/talk-html-plugin",
+  "repository": "https://github.com/LiuShiyuMath/talk-html-plugin",
   "license": "MIT",
   "keywords": [
     "talk-html",
@@ -25,5 +27,18 @@
     "user-journey",
     "playwright",
     "asciinema"
-  ]
+  ],
+  "commands": [
+    "./commands/talk-ceo.md",
+    "./commands/talk-cto.md",
+    "./commands/talk-data.md",
+    "./commands/talk-docs.md",
+    "./commands/talk-html.md",
+    "./commands/talk-legal.md",
+    "./commands/talk-qa.md",
+    "./commands/talk-reviewer.md",
+    "./commands/talk-ship.md",
+    "./commands/talk-ux.md"
+  ],
+  "skills": "./skills/"
 }

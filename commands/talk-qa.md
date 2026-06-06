@@ -1,94 +1,112 @@
 ---
-description: Render an HTML page for a QA / Bug Reporter / Release Manager / Support audience. Use for interactive TUI, CLI output, bug fix, test result, or permission/admin flow — the proof is fail-before/pass-after, never a sentence. Triggers include /talk-qa, "QA 复盘", "给测试看", "bug 修了的证据一页", "回归报告", "release readiness", "for QA", "before-after fix".
+description: Run or report a serious evidence-first QA pass with a full QA matrix, snapshots, a review HTML gallery, bug-fix reruns, global design critique, and a talk-html evidence report. Use for /talk-qa, full QA list/table, release readiness, regression proof, before-after fix evidence, permission/admin flow, "not just login/signup", design QA, snapshot gallery review, or Chinese QA report.
 ---
 
 ```
-   /talk-qa                                     skills/talk-html
-       │                                              │
-       ├── audience: QA / Bug Reporter / Support /
-       │             Release Manager / Maintainer /
-       │             Developer Advocate / Admin Reviewer
-       ├── must-see proof:
-       │   • Interactive TUI → terminal GIF/MP4
-       │   • CLI output      → cast / screenshot / 录像
-       │   • Bug fix         → before-fail + after-pass 双向证据
-       │   • Test result     → 测试报告 dashboard
-       │   • Permission flow → role-based 录像 + access matrix
-       ├── build tools: VHS | asciinema | termtosvg | terminalizer |
-       │                FFmpeg | Playwright | Cypress | pytest |
-       │                Jest | Vitest | JUnit | Playwright Test |
-       │                screen recording | Detox | Maestro |
-       │                Playwright role matrix | policy-as-code
-       ├── eval tools : golden text snapshot | ANSI snapshot |
-       │                expect tests | regex checks |
-       │                approval tests | snapshot tests |
-       │                regression test + screenshot diff + log assertion |
-       │                coverage.py | nyc | mutation testing | junit parser |
-       │                OPA/Rego tests | RBAC matrix tests
-       ├── gate       : exit_code = 0；预期帧/文本出现；无 panic/error
-       │                stdout/stderr = golden
-       │                repro test fails before fix AND passes after fix
-       │                tests = pass；coverage ≥ 阈值；flaky ≤ 阈值
-       │                未授权动作被拦，已授权动作放行
-       └── ci output  : demo.gif, demo.mp4, cast file, snapshot diff,
-                        stdout.txt, before.png, after.png, test report,
-                        junit.xml, coverage.html, access-matrix.csv,
-                        role videos
-                                ↓
-                        渲染由 skills/talk-html 完成
+   /talk-qa
+       │
+       ├── controller: skills/talk-qa/SKILL.md
+       │       ├── list full QA matrix / tabular
+       │       ├── run every row and take snapshots
+       │       ├── generate snapshot review gallery HTML
+       │       ├── fix bugs found by QA
+       │       ├── clear stale snapshots and rerun after fixes
+       │       ├── append newly discovered QA rows
+       │       ├── record global MP4 + contact sheet when interaction-heavy
+       │       ├── audit MP4 anti-patterns instead of hiding limitations
+       │       └── return only when all QA rows pass or a blocker/user stop appears
+       │
+       ├── routes:
+       │       ├── design/UX findings       → design:design-critique
+       │       ├── final Chinese one-pager  → skills/talk-html
+       │       ├── ship-bound journey proof → skills/talk-ship, then skills/talk-html
+       │       ├── browser/visual QA        → browse / frontend testing skill
+       │       └── issue filing             → qa issue-filing skill
+       │
+       └── render:
+               QA evidence bundle + gallery path → skills/talk-html/SKILL.md
 ```
 
-# /talk-qa — 给 QA / bug 报告人 / release manager 看的一页
+# /talk-qa — full QA loop with snapshot gallery
 
-## 受众原则
+## Contract
 
-QA 拒绝一句话：「bug 已修」。他要的固定形态是 **fail-before + pass-after** 双向证据。
-Release Manager 想看「能不能发版」：必需 check 是否全绿、smoke 矩阵是否覆盖、flaky 是否在阈值内。
-Maintainer / Developer Advocate / Admin Reviewer 都在这个 role 下，因为他们的证据形态都是「录像 + snapshot + matrix」。
+`/talk-qa` is not a shortcut for "open the login page and call it done".
 
-## 必看 proof 形态
+It must either:
 
-| artifact_type | proof |
-|---|---|
-| Interactive TUI | terminal GIF/MP4（VHS / asciinema） |
-| CLI output | cast file / 截图 / 录像 |
-| Bug fix | before（fail）+ after（pass）双向 |
-| Test result | 测试报告 dashboard（含失败用例展开） |
-| Permission / admin flow | 多角色录像 + access matrix CSV |
+1. produce a full QA matrix without action when the user asks for plan-only; or
+2. run the matrix, capture snapshots, generate a review gallery, fix bugs in a
+   loop when allowed, run global design critique, and report with real evidence.
 
-## build / eval / gate
+If only `/login` and `/signup` were checked, label the result as:
 
-- **build**：VHS / asciinema / termtosvg / terminalizer / FFmpeg（终端录像），Playwright / Cypress / pytest / Jest / Vitest（测试 + 截屏），Detox / Maestro（移动端 QA），Playwright role matrix + policy-as-code（权限）。
-- **eval**：golden text / ANSI snapshot / expect / regex（终端输出），approval / snapshot（CLI），regression + screenshot diff + log assertion（bug fix），coverage.py / nyc / mutation（覆盖率），junit 解析（汇总），OPA/Rego / RBAC matrix（权限）。
-- **gate**：
-  - 终端：exit_code = 0，预期帧/文本出现，无 panic/error 输出；
-  - CLI：stdout/stderr = golden；
-  - bug：repro test **必须在修复前 fail 且在修复后 pass**（缺一不可）；
-  - 测试：tests = pass，coverage ≥ 阈值，flaky ≤ 阈值；
-  - 权限：未授权动作被拦，已授权动作放行——双向都要证明。
+```text
+auth-screen smoke test only
+```
 
-## CI artifact
+Do not call that full QA.
 
-demo.gif, demo.mp4, cast file, snapshot diff, stdout.txt, before.png, after.png, test report, junit.xml, coverage.html, access-matrix.csv, role videos。
+If a global video does not reach the final result, label it as:
 
-## 表达风格
+```text
+global mp4 smoke evidence only
+```
 
-- bug 页面顶部并排放 before/after 两张截图——不允许只放 after。
-- 终端录像优先 GIF（自动播放、无音轨），加 「.cast 文件下载」链接给可复制 stdin。
-- 权限 page 必须列 access matrix CSV + 每一行至少一段录像证据。
-- 测试报告把失败用例顶在最前；通过的折叠。
+Do not call that release-ready video evidence.
 
-## 渲染分工
+Bad example: 没有等到最终 assistant answer 就停止测试。
 
-锁完 audience / proof / gate / artifact 后交给 `skills/talk-html/SKILL.md`：
+## Main Loop
 
-- 模板：`recap`（回归/release 复盘）或 `explainer`（单个 bug fix 复盘）。
-- 录像必须是真实跑出来的（VHS / asciinema / Playwright video），禁止 ppt 帧。
-- junit / coverage 必须是真实 CI 产物，禁止 mock 数字。
+```text
+while true:
+  list full QA matrix / tabular
+  run full QA and take snapshots for every visual QA row
+  build or refresh the local snapshot gallery HTML
+  record global MP4 + contact sheet for interaction-heavy flows
+  audit MP4 anti-patterns: too short, no final result, no timing, no recovery,
+    desktop-only, localhost-only after production was requested
+  wait for the final assistant answer before using stop/cancel, unless a real
+    timeout or external blocker is recorded
+  fix any issues found by QA, if fixes are allowed
+  if any fixes were made:
+    clear stale active snapshots
+    run full QA again and take fresh snapshots after fix
+  append newly discovered QA rows
+  report current iteration to the user with evidence
+  if all QA rows pass:
+    return to the user
+  else:
+    continue
+```
 
-## 反模式
+Stop only when all rows pass, the user asked for no action/report-only, a real
+blocker requires user input, or the user says stop.
 
-- bug fix 页面只贴 after.png——少一半证据。
-- 「测试加了」一句话，不附 junit——release manager 拒收。
-- 权限页面没有 matrix，只有「我测了几个 role」散文。
-- TUI 用单帧截图代替录像——交互体验完全丢失。
+## Snapshot Review Gallery
+
+The local review HTML must include:
+
+- one card per QA row;
+- snapshot image or terminal/log proof per card where possible;
+- row status, scenario, expected result, actual result, and evidence path;
+- a text input or textarea for reviewer notes on each image card;
+- a global copy button that copies all statuses and reviewer notes;
+- embedded global MP4, contact sheet, metadata, and anti-pattern verdict when a
+  global video is part of the QA evidence;
+- readable Chinese labels and mobile-safe layout.
+
+## Report Handoff
+
+After evidence exists, hand off to `skills/talk-html/SKILL.md` with:
+
+- QA matrix status;
+- snapshot gallery local path;
+- findings and fixes;
+- before/after proof;
+- global MP4 verdict: full workflow evidence, smoke evidence only, blocked, or
+  not applicable;
+- global `design:design-critique` summary;
+- limitations and blocked rows;
+- publish URLs when publishing is allowed.
