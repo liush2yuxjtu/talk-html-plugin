@@ -5,8 +5,8 @@
   "author": {
     "name": "LiuShiyuMath"
   },
-  "homepage": "https://github.com/LiuShiyuMath/talk-html-plugin",
-  "repository": "https://github.com/LiuShiyuMath/talk-html-plugin",
+  "homepage": "https://github.com/liush2yuxjtu/talk-html-plugin",
+  "repository": "https://github.com/liush2yuxjtu/talk-html-plugin",
   "license": "MIT",
   "keywords": [
     "talk-html",
@@ -34,7 +34,7 @@
       "Browser",
       "Publish"
     ],
-    "websiteURL": "https://github.com/LiuShiyuMath/talk-html-plugin",
+    "websiteURL": "https://github.com/liush2yuxjtu/talk-html-plugin",
     "defaultPrompt": [
       "用 talk-html 把这段对话做成一页 HTML",
       "把这个复盘发布成一个可分享的 HTML 页面",
