@@ -1,42 +1,47 @@
 {
-  "target": {
-    "baseId": "appoOASxNv8XKlrvQ",
-    "tableId": "tbl55ful2W6VYJwtl",
-    "recordId": "recEVgqkQfDckMo4I",
-    "logical_table": "ChatGPT Work Hub / Engineering Knowledge Base"
-  },
-  "update_fields": {
-    "verification_summary": "新增仓库级 VERIFY.md + scripts/verify-publishing.py + evidence/2026-09-21.md。RedNote 草稿本地验证 PASS；WeChat payload 本地验证 PASS；真实微信公众号编辑器保存草稿 PASS，appmsgid=100000050，UI 显示“已保存”。wechat-draft-verified 未声明，因为回读正文被执行安全层阻断；wechat-published 未声明。",
-    "github_repo": "https://github.com/liush2yuxjtu/talk-html-plugin",
-    "local_commit": "42a2321",
-    "verification_command": "python3 rednote-gallery/scripts/verify-publishing.py --rednote rednote-gallery/posts/2026-09-21-agent-runtime-wechat-test/rednote-draft.md --wechat rednote-gallery/posts/2026-09-21-agent-runtime-wechat-test/wechat-payload.html --title '模型能力指数增长，企业却还是线性：因为少了两层系统'",
-    "evidence": {
-      "rednote": {
-        "state": "rednote-derived",
-        "result": "PASS",
-        "draft_chars": 1590
-      },
-      "wechat_local": {
-        "state": "html-rendered",
-        "result": "PASS",
-        "title_chars": 25,
-        "html_chars": 10074,
-        "html_bytes": 12598,
-        "readable_chars": 2666
-      },
-      "wechat_platform": {
-        "state": "wechat-draft-saved",
-        "result": "PASS",
-        "appmsgid": "100000050",
-        "editor_body_text_chars": 2402,
-        "editor_html_chars": 13034,
-        "sections": 3,
-        "paragraphs": 84,
-        "inline_styled_elements": 88,
-        "ui_state": "已保存"
+  "baseId": "appoOASxNv8XKlrvQ",
+  "operations": [
+    {
+      "operation": "update",
+      "tableId": "tbl55ful2W6VYJwtl",
+      "logical_table": "ChatGPT Work Hub / Engineering Knowledge Base",
+      "recordId": "recEVgqkQfDckMo4I",
+      "fields": {
+        "verification_summary": "微信公众号草稿已通过官方 draft/get API 回读验证：标题匹配，media_id=bo3pSoCtbwPE5zTl7eY83vN9AEHDzPxngrfd3vx1iAk95m5-ZCsMJwyB8S2urutP，appmsgid=100000050，正文 13,333 HTML chars；当前仍在草稿箱、未发表。2026-09-21 用户开始人工评审，并明确反馈：典型 ChatGPT 竖排、缺少字体/颜色层级、全是文字且干巴巴、没有真实网站截图。当前平台版本已冻结到 talk-html-plugin Git main。",
+        "github_repo": "https://github.com/liush2yuxjtu/talk-html-plugin",
+        "remote_commit": "e14cfd3a7b4ed6523bdd8809607d7d7cc151f7d9",
+        "review_state": "Human review started",
+        "ChatGPT Username": "liushiyu’s Robin"
+      }
+    },
+    {
+      "operation": "create",
+      "tableId": "tblKvRIGSHkYDgPcH",
+      "logical_table": "ChatGPT Work Hub / 小红书 AI 草稿评审",
+      "fields": {
+        "评审记录": "模型能力指数增长，企业却还是线性：因为少了两层系统 · WeChat platform v1",
+        "笔记": [
+          "recrxe7yqyc8ylK6r"
+        ],
+        "版本": "wechat-platform-v1",
+        "AI 原稿": "AGENT SYSTEMS / 2026-09-21\n模型能力指数增长，企业却还是线性：因为少了两层系统\n我之前写过一篇 Harness。\n当时我的结论是：\nPrompt 解决说法。\nContext 解决信息。\nHarness 解决行为。\n后来我发现，这个结论其实只说了一半。\nHarness 解决的是：\n怎么让一个 Agent 把事情做对。\n但企业真正难的还有下一层：\n这个 Agent 已经在我本地 Claude Code 里做对了，\n怎么把它快速复制到 production，\n变成 10 个、100 个、1000 个 worker？\n这可能才是为什么模型能力在指数增长，\n企业效率却还在缓慢爬坡。\n中间少了两层东西。\n第一层：Done Right。\n现在很多人的 Agent 架构，其实很像：\n找一个便宜模型，\n让它自己理解任务，\n自己执行，\n自己检查，\n错了就 retry。\n听起来省钱。\n但这其实跟考试时让同一个学生：\n自己出题，\n自己答题，\n最后再自己判卷\n差不多。\n它非常容易自洽。\n我现在更喜欢把一个 todo 拆成三个角色。\n最强模型做 Advisor。\n它不搬砖。\n它先看完整上下文，给执行建议，定义 acceptance criteria，再告诉系统：这个任务最多值得花多少钱。\n然后便宜模型做 Executor。\n它只拿到任务、工具和执行边界。\n负责真正改代码、跑命令、查资料、产出结果。\n最后再来一个上下文隔离的 Checker。\nChecker 不需要知道 Executor 为什么这么做，\n也不要继承它那一大坨 reasoning。\n它只看：\n目标是什么？\n验收标准是什么？\n实际 evidence 是什么？\n过没过？\n这时候最强模型的价值，不是每个 token 都亲自干活。\n而是在最有杠杆的位置，\n决定“什么叫做对”。\n然后我会算另一个东西。\n不是 cost per token。\n而是：\ncost per accepted task。\n便宜模型一次调用当然便宜。\n但如果它要 retry 5 次，\n中间打断人 3 次，\n最后还要一个工程师重新检查，\n那它可能一点都不便宜。\n所以预算应该是 todo 的一部分。\n一个任务开始之前就应该知道：\n值得用什么模型？\n最多允许几次 retry？\n什么时候应该升级到最强模型？\n什么时候应该并行跑几个解，再让 Checker 选？\n这其实不是“怎么省模型钱”。\n而是怎么用最少的钱，买到一个真正通过验收的结果。\n但做到这里，还是不够。\n第二层：Ship to Production。\n假设今天 Claude Code 在我的 Mac 上，\n真的把一个任务做得特别好。\nPrompt 写好了。\nSkills 配好了。\nTools 接好了。\nHarness 和 Evals 也都过了。\n但每次还得我自己：\n打开电脑，\n开 terminal，\n把任务粘进去，\n等它跑，\n手动看结果。\n那这仍然只是一个很好用的 prototype。\n它还不是企业能力。\n企业真正需要的，是把“这一次做对”变成一个可复制单元。\n我现在觉得一个真正能 ship 的 Agent，至少应该被打包成这样：\nInput Contract\n↓\nSkills / Tools\n↓\nHarness / Evals\n↓\nPermissions / Secrets\n↓\nState / Persistence\n↓\nBudget / Timeout\n↓\nEvidence\n然后下面再接一个 runtime。\n任务来了以后：\nQueue\n→ 启一个隔离 Worker\n→ 执行\n→ 自动验收\n→ 失败重试 / 升级模型\n→ 保存 evidence\n→ 完成后销毁\n本地 1 个成功的 Claude Code session，\n应该可以变成：\n云端 10 个，\n100 个，\n1000 个相同 contract 的 worker。\n这才是 Managed Agent、Agent Runtime、Lambda、Container 这类东西真正重要的地方。\n它们不是让模型变聪明。\n它们解决的是另外一个问题：\n怎么把一个已经验证过的 Agent，\n变成可以部署、并发、监控、重试、控制权限和预算的生产系统。\n这其实很像 Cloud Computing。\nCPU 越来越快，\n不等于你自动拥有了一个可以服务一亿用户的互联网公司。\n中间还差：\n虚拟化、\n调度、\n部署、\n监控、\n权限、\n存储、\n故障恢复。\n模型也一样。\nModel 是新的 CPU。\nHarness + Runtime，\n才更像 Agent 时代的 Cloud Layer。\n所以我现在会把企业 AI 的增长写成一个很简单的式子：\nAI Output\n≈\nModel Intelligence\n× Reliability\n× Replication\n模型能力可以指数上涨。\n但如果 Reliability 很低，\n每个任务都要人盯；\n或者 Replication 很低，\n一个做对的 Agent 只能活在某个人的电脑里；\n那企业得到的增长当然还是线性的。\n所以真正缺的可能不是下一个更强的模型。\n而是两个东西：\nHarness，让它稳定做对。\nRuntime，把“做对”复制到 production。\n上一次我写：\nPrompt 解决说法，\nContext 解决信息，\nHarness 解决行为。\n现在我想再补一句：\nRuntime 解决规模。\nPrompt 解决说法，Context 解决信息，Harness 解决行为，Runtime 解决规模。\n",
+        "封面标题": "模型能力指数增长，企业却还是线性：因为少了两层系统",
+        "用户原话评价": "这个做的又是典型的chatgpt的竖着说话，然后没有字体，颜色的变化，然后全是文字，干巴巴的，没有真实网站的截图。",
+        "评价标签": [
+          "排版节奏",
+          "字体层级",
+          "颜色层级",
+          "过度文本化",
+          "缺少真实截图"
+        ],
+        "评审结果": "需修改",
+        "下一版要求": "减少逐句断行的 ChatGPT 式竖排；建立明确字体大小/字重层级；使用克制的语义颜色；增加图文混排；加入真实网站/产品 UI 截图作为证据与视觉锚点；保留本版作为不可覆盖评审基线。",
+        "生成来源": "ChatGPT",
+        "生成日期": "2026-09-21",
+        "ChatGPT Username": "liushiyu’s Robin"
       }
     }
-  },
+  ],
   "status": "pending_connector_sync",
-  "reason": "This fork/session exposes Grokbot developer MCP only; Airtable connector/API credentials are not available on Grokbot."
+  "reason": "Current ChatGPT turn does not expose the authenticated Airtable connector; Mac mini official Airtable MCP is configured but reports Not logged in. No Airtable mutation is claimed until connector read-back succeeds."
 }
