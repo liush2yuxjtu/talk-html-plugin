@@ -16,13 +16,10 @@
 
 name: ci
 
+# Pre-PR checks moved to local /verify; manual fallback only.
 on:
-  push:
-    branches: [main]
-  pull_request:
-    branches: [main]
+  workflow_dispatch:
 
-# cancel in-progress runs for the same ref
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
