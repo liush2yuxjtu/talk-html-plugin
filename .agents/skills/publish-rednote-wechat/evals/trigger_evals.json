@@ -1,0 +1,82 @@
+[
+  {
+    "query": "把这篇内容写成小红书草稿并验证。",
+    "should_trigger": true
+  },
+  {
+    "query": "做一个 RedNote 版本，保留 source provenance。",
+    "should_trigger": true
+  },
+  {
+    "query": "把这个 HTML 放进微信公众号草稿箱并确认真的保存了。",
+    "should_trigger": true
+  },
+  {
+    "query": "保存微信图文草稿，然后重新打开验证。",
+    "should_trigger": true
+  },
+  {
+    "query": "把同一篇文章同步成小红书和公众号两个版本。",
+    "should_trigger": true
+  },
+  {
+    "query": "公众号的 appmsgid 是什么，保存状态真的成功了吗？",
+    "should_trigger": true
+  },
+  {
+    "query": "验证这篇小红书是不是已经真的发布，不要只看 gallery。",
+    "should_trigger": true
+  },
+  {
+    "query": "检查微信 HTML 是否符合发布规则，然后进真实编辑器。",
+    "should_trigger": true
+  },
+  {
+    "query": "RedNote preview 有了，继续完成平台草稿验证。",
+    "should_trigger": true
+  },
+  {
+    "query": "发布前确认微信公众号正文没有被编辑器降级成纯文本。",
+    "should_trigger": true
+  },
+  {
+    "query": "把当前对话做成一个 talk-html 页面。",
+    "should_trigger": false
+  },
+  {
+    "query": "解释这个 HTML CSS 为什么错位。",
+    "should_trigger": false
+  },
+  {
+    "query": "给这个 README 润色一下。",
+    "should_trigger": false
+  },
+  {
+    "query": "跑一下普通单元测试。",
+    "should_trigger": false
+  },
+  {
+    "query": "做一个网页 landing page。",
+    "should_trigger": false
+  },
+  {
+    "query": "总结今天所有 GitHub PR。",
+    "should_trigger": false
+  },
+  {
+    "query": "只画一个 SVG 架构图。",
+    "should_trigger": false
+  },
+  {
+    "query": "检查 Python 堆栈为什么报错。",
+    "should_trigger": false
+  },
+  {
+    "query": "写一封普通邮件。",
+    "should_trigger": false
+  },
+  {
+    "query": "创建一个与社交媒体发布无关的 CI workflow。",
+    "should_trigger": false
+  }
+]

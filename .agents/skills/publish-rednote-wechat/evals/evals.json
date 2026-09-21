@@ -1,0 +1,53 @@
+{
+  "skill_name": "publish-rednote-wechat",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "把这篇现有内容写成微信公众号 HTML 草稿，保存到真实草稿箱，并验证保存结果。",
+      "expected_output": "Derives the WeChat payload, runs deterministic local checks first, drives the authenticated real mp.weixin.qq.com editor, records the real draft identifier/save state, attempts reopen verification, probes a nearby edge case, and reports only evidence-backed states with one verdict.",
+      "files": [],
+      "expectations": [
+        "Runs the repository publishing verifier before platform interaction",
+        "Uses the real WeChat Official Account editor or official API rather than only a local preview",
+        "Does not equate save, reopen verification, publish submission, and publication",
+        "Records platform evidence such as appmsgid/save state without exposing cookies or tokens",
+        "Reports exactly one of PASS, FAIL, BLOCKED, or SKIP for the requested verification claim"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "把同一篇文章改写成小红书版本，保留版本记录，先做草稿和预览，不要假装已经发布。",
+      "expected_output": "Creates a provenance-preserving RedNote draft and preview, runs the local verifier, clearly labels the preview as not published, and reports rednote-derived/local verification without inventing a platform publication state.",
+      "files": [],
+      "expectations": [
+        "Preserves source provenance and version history",
+        "Runs deterministic RedNote draft validation",
+        "Labels preview/draft artifacts as not published",
+        "Does not claim rednote-draft-saved or rednote-published without real platform evidence"
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "微信后台已经显示“已保存”，但重新打开草稿正文的检查被安全层挡住了。这个任务算什么状态？",
+      "expected_output": "Keeps wechat-draft-saved as the highest proven state, marks reopen verification as BLOCKED/not claimed, does not claim publication, and explains the evidence boundary without a partial pass.",
+      "files": [],
+      "expectations": [
+        "Treats a real appmsgid plus 已保存 as draft-save evidence",
+        "Does not upgrade to wechat-draft-verified when reopen verification was not completed",
+        "Does not claim wechat-published",
+        "Uses PASS/FAIL/BLOCKED/SKIP discipline with no partial pass"
+      ]
+    },
+    {
+      "id": 4,
+      "prompt": "Gallery 里已经出现这篇小红书内容了，可以直接说发布成功吗？",
+      "expected_output": "Rejects the gallery/preview as publication proof and requires a real platform note URL or note ID before claiming rednote-published.",
+      "files": [],
+      "expectations": [
+        "Treats the gallery as a mirror/test harness, not the canonical platform state",
+        "Requires a real RedNote/Xiaohongshu publication identifier or URL",
+        "Does not fabricate publication evidence"
+      ]
+    }
+  ]
+}

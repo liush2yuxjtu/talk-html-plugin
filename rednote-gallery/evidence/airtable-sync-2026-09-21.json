@@ -1,0 +1,42 @@
+{
+  "target": {
+    "baseId": "appoOASxNv8XKlrvQ",
+    "tableId": "tbl55ful2W6VYJwtl",
+    "recordId": "recEVgqkQfDckMo4I",
+    "logical_table": "ChatGPT Work Hub / Engineering Knowledge Base"
+  },
+  "update_fields": {
+    "verification_summary": "新增仓库级 VERIFY.md + scripts/verify-publishing.py + evidence/2026-09-21.md。RedNote 草稿本地验证 PASS；WeChat payload 本地验证 PASS；真实微信公众号编辑器保存草稿 PASS，appmsgid=100000050，UI 显示“已保存”。wechat-draft-verified 未声明，因为回读正文被执行安全层阻断；wechat-published 未声明。",
+    "github_repo": "https://github.com/liush2yuxjtu/talk-html-plugin",
+    "local_commit": "42a2321",
+    "verification_command": "python3 rednote-gallery/scripts/verify-publishing.py --rednote rednote-gallery/posts/2026-09-21-agent-runtime-wechat-test/rednote-draft.md --wechat rednote-gallery/posts/2026-09-21-agent-runtime-wechat-test/wechat-payload.html --title '模型能力指数增长，企业却还是线性：因为少了两层系统'",
+    "evidence": {
+      "rednote": {
+        "state": "rednote-derived",
+        "result": "PASS",
+        "draft_chars": 1590
+      },
+      "wechat_local": {
+        "state": "html-rendered",
+        "result": "PASS",
+        "title_chars": 25,
+        "html_chars": 10074,
+        "html_bytes": 12598,
+        "readable_chars": 2666
+      },
+      "wechat_platform": {
+        "state": "wechat-draft-saved",
+        "result": "PASS",
+        "appmsgid": "100000050",
+        "editor_body_text_chars": 2402,
+        "editor_html_chars": 13034,
+        "sections": 3,
+        "paragraphs": 84,
+        "inline_styled_elements": 88,
+        "ui_state": "已保存"
+      }
+    }
+  },
+  "status": "pending_connector_sync",
+  "reason": "This fork/session exposes Grokbot developer MCP only; Airtable connector/API credentials are not available on Grokbot."
+}

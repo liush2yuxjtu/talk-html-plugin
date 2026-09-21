@@ -66,6 +66,23 @@ Community references:
 
 ## 5. Verification gates
 
+Primary project skill for this domain: `../.agents/skills/publish-rednote-wechat/SKILL.md` from repository root (`.agents/skills/publish-rednote-wechat/SKILL.md`). Use it for every RedNote/Xiaohongshu or WeChat Official Account writing, draft-save, verification, or publish task.
+
+Detailed verification appendix and evidence examples: see `VERIFY.md`.
+
+Before completing any RedNote / WeChat writing task, run the deterministic verifier:
+
+```bash
+python3 rednote-gallery/scripts/verify-publishing.py \
+  --rednote rednote-gallery/posts/<post>/rednote-draft.md \
+  --wechat rednote-gallery/posts/<post>/wechat-payload.html \
+  --title '文章标题'
+```
+
+A local PASS proves artifact readiness only. Platform draft-save, reopen verification, and publication each require their own platform evidence as defined in `VERIFY.md`.
+
+For every live run, add a non-secret evidence record under `rednote-gallery/evidence/YYYY-MM-DD.md`.
+
 Before claiming `html-rendered` PASS:
 - payload contains no `script` or `style` tags;
 - no external body image URL remains;
