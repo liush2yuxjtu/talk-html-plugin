@@ -1,156 +1,154 @@
-file=work/talk-html-plugin-verify/rednote-gallery/posts/2026-09-21-agent-runtime-wechat-test/wechat-draft-platform-v1.txt lines=155
-     1|AGENT SYSTEMS / 2026-09-21
-     2|模型能力指数增长，企业却还是线性：因为少了两层系统
-     3|我之前写过一篇 Harness。
-     4|当时我的结论是：
-     5|Prompt 解决说法。
-     6|Context 解决信息。
-     7|Harness 解决行为。
-     8|后来我发现，这个结论其实只说了一半。
-     9|Harness 解决的是：
-    10|怎么让一个 Agent 把事情做对。
-    11|但企业真正难的还有下一层：
-    12|这个 Agent 已经在我本地 Claude Code 里做对了，
-    13|怎么把它快速复制到 production，
-    14|变成 10 个、100 个、1000 个 worker？
-    15|这可能才是为什么模型能力在指数增长，
-    16|企业效率却还在缓慢爬坡。
-    17|中间少了两层东西。
-    18|第一层：Done Right。
-    19|现在很多人的 Agent 架构，其实很像：
-    20|找一个便宜模型，
-    21|让它自己理解任务，
-    22|自己执行，
-    23|自己检查，
-    24|错了就 retry。
-    25|听起来省钱。
-    26|但这其实跟考试时让同一个学生：
-    27|自己出题，
-    28|自己答题，
-    29|最后再自己判卷
-    30|差不多。
-    31|它非常容易自洽。
-    32|我现在更喜欢把一个 todo 拆成三个角色。
-    33|最强模型做 Advisor。
-    34|它不搬砖。
-    35|它先看完整上下文，给执行建议，定义 acceptance criteria，再告诉系统：这个任务最多值得花多少钱。
-    36|然后便宜模型做 Executor。
-    37|它只拿到任务、工具和执行边界。
-    38|负责真正改代码、跑命令、查资料、产出结果。
-    39|最后再来一个上下文隔离的 Checker。
-    40|Checker 不需要知道 Executor 为什么这么做，
-    41|也不要继承它那一大坨 reasoning。
-    42|它只看：
-    43|目标是什么？
-    44|验收标准是什么？
-    45|实际 evidence 是什么？
-    46|过没过？
-    47|这时候最强模型的价值，不是每个 token 都亲自干活。
-    48|而是在最有杠杆的位置，
-    49|决定“什么叫做对”。
-    50|然后我会算另一个东西。
-    51|不是 cost per token。
-    52|而是：
-    53|cost per accepted task。
-    54|便宜模型一次调用当然便宜。
-    55|但如果它要 retry 5 次，
-    56|中间打断人 3 次，
-    57|最后还要一个工程师重新检查，
-    58|那它可能一点都不便宜。
-    59|所以预算应该是 todo 的一部分。
-    60|一个任务开始之前就应该知道：
-    61|值得用什么模型？
-    62|最多允许几次 retry？
-    63|什么时候应该升级到最强模型？
-    64|什么时候应该并行跑几个解，再让 Checker 选？
-    65|这其实不是“怎么省模型钱”。
-    66|而是怎么用最少的钱，买到一个真正通过验收的结果。
-    67|但做到这里，还是不够。
-    68|第二层：Ship to Production。
-    69|假设今天 Claude Code 在我的 Mac 上，
-    70|真的把一个任务做得特别好。
-    71|Prompt 写好了。
-    72|Skills 配好了。
-    73|Tools 接好了。
-    74|Harness 和 Evals 也都过了。
-    75|但每次还得我自己：
-    76|打开电脑，
-    77|开 terminal，
-    78|把任务粘进去，
-    79|等它跑，
-    80|手动看结果。
-    81|那这仍然只是一个很好用的 prototype。
-    82|它还不是企业能力。
-    83|企业真正需要的，是把“这一次做对”变成一个可复制单元。
-    84|我现在觉得一个真正能 ship 的 Agent，至少应该被打包成这样：
-    85|Input Contract
-    86|↓
-    87|Skills / Tools
-    88|↓
-    89|Harness / Evals
-    90|↓
-    91|Permissions / Secrets
-    92|↓
-    93|State / Persistence
-    94|↓
-    95|Budget / Timeout
-    96|↓
-    97|Evidence
-    98|然后下面再接一个 runtime。
-    99|任务来了以后：
-   100|Queue
-   101|→ 启一个隔离 Worker
-   102|→ 执行
-   103|→ 自动验收
-   104|→ 失败重试 / 升级模型
-   105|→ 保存 evidence
-   106|→ 完成后销毁
-   107|本地 1 个成功的 Claude Code session，
-   108|应该可以变成：
-   109|云端 10 个，
-   110|100 个，
-   111|1000 个相同 contract 的 worker。
-   112|这才是 Managed Agent、Agent Runtime、Lambda、Container 这类东西真正重要的地方。
-   113|它们不是让模型变聪明。
-   114|它们解决的是另外一个问题：
-   115|怎么把一个已经验证过的 Agent，
-   116|变成可以部署、并发、监控、重试、控制权限和预算的生产系统。
-   117|这其实很像 Cloud Computing。
-   118|CPU 越来越快，
-   119|不等于你自动拥有了一个可以服务一亿用户的互联网公司。
-   120|中间还差：
-   121|虚拟化、
-   122|调度、
-   123|部署、
-   124|监控、
-   125|权限、
-   126|存储、
-   127|故障恢复。
-   128|模型也一样。
-   129|Model 是新的 CPU。
-   130|Harness + Runtime，
-   131|才更像 Agent 时代的 Cloud Layer。
-   132|所以我现在会把企业 AI 的增长写成一个很简单的式子：
-   133|AI Output
-   134|≈
-   135|Model Intelligence
-   136|× Reliability
-   137|× Replication
-   138|模型能力可以指数上涨。
-   139|但如果 Reliability 很低，
-   140|每个任务都要人盯；
-   141|或者 Replication 很低，
-   142|一个做对的 Agent 只能活在某个人的电脑里；
-   143|那企业得到的增长当然还是线性的。
-   144|所以真正缺的可能不是下一个更强的模型。
-   145|而是两个东西：
-   146|Harness，让它稳定做对。
-   147|Runtime，把“做对”复制到 production。
-   148|上一次我写：
-   149|Prompt 解决说法，
-   150|Context 解决信息，
-   151|Harness 解决行为。
-   152|现在我想再补一句：
-   153|Runtime 解决规模。
-   154|Prompt 解决说法，Context 解决信息，Harness 解决行为，Runtime 解决规模。
-   155|
+AGENT SYSTEMS / 2026-09-21
+模型能力指数增长，企业却还是线性：因为少了两层系统
+我之前写过一篇 Harness。
+当时我的结论是：
+Prompt 解决说法。
+Context 解决信息。
+Harness 解决行为。
+后来我发现，这个结论其实只说了一半。
+Harness 解决的是：
+怎么让一个 Agent 把事情做对。
+但企业真正难的还有下一层：
+这个 Agent 已经在我本地 Claude Code 里做对了，
+怎么把它快速复制到 production，
+变成 10 个、100 个、1000 个 worker？
+这可能才是为什么模型能力在指数增长，
+企业效率却还在缓慢爬坡。
+中间少了两层东西。
+第一层：Done Right。
+现在很多人的 Agent 架构，其实很像：
+找一个便宜模型，
+让它自己理解任务，
+自己执行，
+自己检查，
+错了就 retry。
+听起来省钱。
+但这其实跟考试时让同一个学生：
+自己出题，
+自己答题，
+最后再自己判卷
+差不多。
+它非常容易自洽。
+我现在更喜欢把一个 todo 拆成三个角色。
+最强模型做 Advisor。
+它不搬砖。
+它先看完整上下文，给执行建议，定义 acceptance criteria，再告诉系统：这个任务最多值得花多少钱。
+然后便宜模型做 Executor。
+它只拿到任务、工具和执行边界。
+负责真正改代码、跑命令、查资料、产出结果。
+最后再来一个上下文隔离的 Checker。
+Checker 不需要知道 Executor 为什么这么做，
+也不要继承它那一大坨 reasoning。
+它只看：
+目标是什么？
+验收标准是什么？
+实际 evidence 是什么？
+过没过？
+这时候最强模型的价值，不是每个 token 都亲自干活。
+而是在最有杠杆的位置，
+决定“什么叫做对”。
+然后我会算另一个东西。
+不是 cost per token。
+而是：
+cost per accepted task。
+便宜模型一次调用当然便宜。
+但如果它要 retry 5 次，
+中间打断人 3 次，
+最后还要一个工程师重新检查，
+那它可能一点都不便宜。
+所以预算应该是 todo 的一部分。
+一个任务开始之前就应该知道：
+值得用什么模型？
+最多允许几次 retry？
+什么时候应该升级到最强模型？
+什么时候应该并行跑几个解，再让 Checker 选？
+这其实不是“怎么省模型钱”。
+而是怎么用最少的钱，买到一个真正通过验收的结果。
+但做到这里，还是不够。
+第二层：Ship to Production。
+假设今天 Claude Code 在我的 Mac 上，
+真的把一个任务做得特别好。
+Prompt 写好了。
+Skills 配好了。
+Tools 接好了。
+Harness 和 Evals 也都过了。
+但每次还得我自己：
+打开电脑，
+开 terminal，
+把任务粘进去，
+等它跑，
+手动看结果。
+那这仍然只是一个很好用的 prototype。
+它还不是企业能力。
+企业真正需要的，是把“这一次做对”变成一个可复制单元。
+我现在觉得一个真正能 ship 的 Agent，至少应该被打包成这样：
+Input Contract
+↓
+Skills / Tools
+↓
+Harness / Evals
+↓
+Permissions / Secrets
+↓
+State / Persistence
+↓
+Budget / Timeout
+↓
+Evidence
+然后下面再接一个 runtime。
+任务来了以后：
+Queue
+→ 启一个隔离 Worker
+→ 执行
+→ 自动验收
+→ 失败重试 / 升级模型
+→ 保存 evidence
+→ 完成后销毁
+本地 1 个成功的 Claude Code session，
+应该可以变成：
+云端 10 个，
+100 个，
+1000 个相同 contract 的 worker。
+这才是 Managed Agent、Agent Runtime、Lambda、Container 这类东西真正重要的地方。
+它们不是让模型变聪明。
+它们解决的是另外一个问题：
+怎么把一个已经验证过的 Agent，
+变成可以部署、并发、监控、重试、控制权限和预算的生产系统。
+这其实很像 Cloud Computing。
+CPU 越来越快，
+不等于你自动拥有了一个可以服务一亿用户的互联网公司。
+中间还差：
+虚拟化、
+调度、
+部署、
+监控、
+权限、
+存储、
+故障恢复。
+模型也一样。
+Model 是新的 CPU。
+Harness + Runtime，
+才更像 Agent 时代的 Cloud Layer。
+所以我现在会把企业 AI 的增长写成一个很简单的式子：
+AI Output
+≈
+Model Intelligence
+× Reliability
+× Replication
+模型能力可以指数上涨。
+但如果 Reliability 很低，
+每个任务都要人盯；
+或者 Replication 很低，
+一个做对的 Agent 只能活在某个人的电脑里；
+那企业得到的增长当然还是线性的。
+所以真正缺的可能不是下一个更强的模型。
+而是两个东西：
+Harness，让它稳定做对。
+Runtime，把“做对”复制到 production。
+上一次我写：
+Prompt 解决说法，
+Context 解决信息，
+Harness 解决行为。
+现在我想再补一句：
+Runtime 解决规模。
+Prompt 解决说法，Context 解决信息，Harness 解决行为，Runtime 解决规模。
