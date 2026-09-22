@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>模型能力指数增长，企业却还是线性：因为少了两层系统 · v2</title>
+<meta name="description" content="WeChat review preview v2">
+<style>
+:root{--paper:#f6f2ec;--card:#fffdf9;--ink:#171717;--body:#353535;--muted:#77716b;--line:#ded7ce;--purple:#6647e8;--purple-soft:#eee9ff;--orange:#d95b26;--orange-soft:#fff0e8;--green:#1f7a5b;--green-soft:#eaf6f0;--blue:#2d67c7;--blue-soft:#eaf2ff;--black:#141414}
+*{box-sizing:border-box}html{background:var(--paper)}body{margin:0;color:var(--ink);background:radial-gradient(circle at 20% -10%,rgba(102,71,232,.09),transparent 26rem),var(--paper);font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Noto Sans CJK SC","Microsoft YaHei",sans-serif;-webkit-font-smoothing:antialiased}a{color:inherit}
+.reviewbar{position:sticky;top:0;z-index:20;border-bottom:1px solid rgba(23,23,23,.10);background:rgba(246,242,236,.92);backdrop-filter:blur(14px)}.reviewbar-inner{max-width:840px;margin:auto;padding:10px 18px;display:flex;justify-content:space-between;align-items:center;gap:16px;font-size:13px;color:var(--muted)}.reviewbar strong{color:var(--ink);font-size:13px}.review-pill{display:inline-flex;align-items:center;gap:7px;padding:6px 10px;border:1px solid #cabfff;border-radius:999px;color:#5138bd;background:var(--purple-soft);font-weight:700;white-space:nowrap}
+.page{width:min(100%,840px);margin:0 auto;padding:34px 18px 84px}.article{max-width:680px;margin:auto;background:var(--card);border:1px solid rgba(23,23,23,.08);border-radius:26px;padding:42px 46px 58px;box-shadow:0 24px 70px rgba(47,39,31,.09)}
+.eyebrow{margin:0 0 14px;font-size:12px;letter-spacing:.12em;font-weight:800;color:var(--purple)}h1{margin:0;font-size:38px;line-height:1.18;letter-spacing:-.04em;font-weight:900;text-wrap:balance}.lede{margin:24px 0 0;font-size:19px;line-height:1.82;color:#292929;font-weight:580}.meta{margin:18px 0 0;font-size:13px;color:var(--muted)}.rule{height:1px;background:var(--line);margin:34px 0}
+p{margin:0 0 20px;color:var(--body);font-size:17px;line-height:1.9}p strong{color:var(--ink)}h2{margin:44px 0 18px;font-size:27px;line-height:1.28;letter-spacing:-.025em}.kicker{display:block;margin:0 0 8px;font-size:12px;letter-spacing:.13em;text-transform:uppercase;color:var(--purple);font-weight:900}
+.big-idea{margin:28px 0;padding:23px 24px 21px;border-radius:18px;background:var(--black);color:#fff}.big-idea .label{font-size:11px;font-weight:800;letter-spacing:.12em;color:#bfb4ff;text-transform:uppercase}.big-idea p{margin:8px 0 0;color:#fff;font-size:24px;line-height:1.52;font-weight:820;letter-spacing:-.02em}
+.triad{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:26px 0 30px}.triad article{min-width:0;padding:17px 14px;border-radius:15px;border:1px solid var(--line);background:#fff}.triad .n{font-size:11px;font-weight:900;color:var(--muted);letter-spacing:.08em}.triad h3{margin:6px 0 8px;font-size:17px;line-height:1.2}.triad p{margin:0;font-size:13px;line-height:1.6;color:#5c5752}.triad article:nth-child(1){border-top:4px solid var(--purple)}.triad article:nth-child(2){border-top:4px solid var(--orange)}.triad article:nth-child(3){border-top:4px solid var(--green)}
+.highlight{margin:26px 0;padding:18px 20px;border-radius:16px;background:var(--orange-soft);border-left:4px solid var(--orange)}.highlight p{margin:0;color:#62341f;font-size:18px;line-height:1.72;font-weight:680}
+.figure{margin:30px 0 34px;border:1px solid var(--line);border-radius:18px;overflow:hidden;background:#fff}.figure img{display:block;width:100%;height:auto;background:#ececec}.figure figcaption{padding:13px 15px 14px;font-size:13px;line-height:1.55;color:var(--muted)}.figure figcaption strong{color:var(--ink)}.figure figcaption a{text-decoration:underline;text-underline-offset:3px}.source-tag{display:inline-block;margin-right:6px;padding:3px 7px;border-radius:6px;background:var(--blue-soft);color:var(--blue);font-size:11px;font-weight:800}
+.flow{margin:26px 0 30px;padding:19px;border:1px solid #d8cffd;background:#faf8ff;border-radius:18px}.flow-row{display:flex;flex-wrap:wrap;gap:8px;align-items:center}.flow .box{padding:9px 11px;border-radius:10px;background:#fff;border:1px solid #ddd4ff;color:#4d35b3;font-weight:760;font-size:14px}.flow .arrow{color:#8a79d5;font-weight:900}
+.runtime-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:28px 0}.runtime-grid .figure{margin:0}.formula{margin:34px 0;padding:26px 22px;text-align:center;border-radius:20px;background:linear-gradient(135deg,#f1edff 0%,#fff7f1 100%);border:1px solid #ddd3ff}.formula .small{font-size:11px;letter-spacing:.12em;color:var(--muted);font-weight:900}.formula .eq{margin-top:10px;font-size:27px;line-height:1.45;font-weight:900;letter-spacing:-.03em}.formula .eq span:nth-child(1){color:var(--purple)}.formula .eq span:nth-child(2){color:var(--orange)}.formula .eq span:nth-child(3){color:var(--green)}
+.closing{margin-top:38px;padding:24px;border-radius:18px;background:var(--green-soft)}.closing p{margin:0;color:#214e3d;font-size:19px;line-height:1.75;font-weight:740}.sources{margin-top:42px;padding-top:20px;border-top:1px solid var(--line);color:var(--muted);font-size:12px;line-height:1.75}.sources a{color:#4d35b3}
+@media(max-width:720px){.page{padding:18px 0 62px}.article{border-radius:0;border-left:0;border-right:0;padding:32px 22px 48px;box-shadow:none}h1{font-size:31px}.lede{font-size:18px;line-height:1.75}p{font-size:16px;line-height:1.86}h2{font-size:24px;margin-top:38px}.triad{grid-template-columns:1fr}.triad article{display:grid;grid-template-columns:58px 1fr;column-gap:12px}.triad .n{grid-row:1 / span 2;align-self:start;padding-top:3px}.triad h3{margin-top:0}.triad p{grid-column:2}.runtime-grid{grid-template-columns:1fr}.big-idea p{font-size:22px}.formula .eq{font-size:23px}.reviewbar-inner{padding:8px 12px}.reviewbar-inner>span:first-child{display:none}}
+</style>
+</head>
+<body>
+<div class="reviewbar"><div class="reviewbar-inner"><span><strong>talk-html / WeChat review</strong> · 基于 v1 人工反馈重做</span><span class="review-pill">V2 · REVIEW PREVIEW</span></div></div>
+<main class="page"><article class="article">
+<header><p class="eyebrow">AGENT SYSTEMS · 2026-09-21</p><h1>模型能力指数增长，企业却还是线性：因为少了两层系统</h1><p class="lede">我之前写过一篇 Harness。当时我的结论是：Prompt 解决说法，Context 解决信息，Harness 解决行为。后来我发现，这个结论其实只说了一半。</p><p class="meta">刘师宇 · 人工评审版 v2</p></header>
+<div class="rule"></div>
+<p>Harness 解决的是：<strong>怎么让一个 Agent 把事情做对。</strong>但企业真正难的还有下一层。一个 Agent 已经在我本地 Claude Code 里做对了，怎么把它快速复制到 production，变成 10 个、100 个、1000 个 worker？</p>
+<p>这可能才是为什么模型能力在指数增长，企业效率却还在缓慢爬坡。中间真正缺的，不是“再换一个聪明一点的模型”，而是两层系统。</p>
+<div class="big-idea"><div class="label">The missing layers</div><p>第一层让任务稳定做对。<br>第二层把“做对”复制到 production。</p></div>
+<h2><span class="kicker">Layer 01</span>Done Right：先把“什么叫做对”拆开</h2>
+<p>现在很多 Agent 架构其实很像：找一个便宜模型，让它自己理解任务、自己执行、自己检查，错了就 retry。听起来省钱，但这跟考试时让同一个学生自己出题、自己答题、最后再自己判卷差不多。最危险的不是它答错，而是它能非常自洽地认为自己答对了。</p>
+<p>我现在更喜欢把一个 todo 拆成三个角色：</p>
+<section class="triad" aria-label="Advisor Executor Checker">
+<article><div class="n">01 / DEFINE</div><div><h3>Advisor</h3><p>最强模型先看完整上下文，定义 acceptance criteria，决定“什么叫做对”，同时给任务预算。</p></div></article>
+<article><div class="n">02 / EXECUTE</div><div><h3>Executor</h3><p>便宜模型只拿任务、工具和执行边界，真正改代码、跑命令、查资料、产出结果。</p></div></article>
+<article><div class="n">03 / VERIFY</div><div><h3>Checker</h3><p>上下文隔离，只看目标、验收标准和真实 evidence，然后给 PASS / FAIL。</p></div></article>
+</section>
+<figure class="figure"><img src="assets-v2/claude-code-anthropic.png" alt="Anthropic 官方 Claude Code 页面真实截图"><figcaption><span class="source-tag">REAL SITE</span><strong>Anthropic · Claude Code</strong>。本地 Agent 已经可以在真实代码库里执行复杂任务；问题不再只是“能不能做”，而是“如何稳定验收、如何复制”。 <a href="https://www.anthropic.com/features/making-of-claude-code" target="_blank" rel="noreferrer">查看原站</a></figcaption></figure>
+<div class="highlight"><p>所以我现在不太关心 cost per token，我更关心 <strong>cost per accepted task</strong>。</p></div>
+<p>便宜模型一次调用当然便宜。但如果它 retry 5 次，中间打断人 3 次，最后还要工程师重新检查，那它一点都不便宜。预算应该是 todo 的一部分：值得用什么模型？最多允许几次 retry？什么时候升级？什么时候并行跑几个解，再让 Checker 选？</p>
+<p>这不是“怎么省模型钱”，而是怎么用最少的钱，买到一个真正通过验收的结果。</p>
+<h2><span class="kicker">Layer 02</span>Ship to Production：一次做对，不等于企业能力</h2>
+<p>假设今天 Claude Code 在我的 Mac 上，真的把一个任务做得特别好。Prompt、Skills、Tools、Harness、Evals 都配好了。但每次还得我打开电脑、开 terminal、把任务贴进去、盯着它跑、手动看结果，那它仍然只是一个很好用的 prototype。</p>
+<p><strong>企业真正需要的是把“这一次做对”变成一个可复制单元。</strong></p>
+<div class="flow"><div class="flow-row"><span class="box">Input Contract</span><span class="arrow">→</span><span class="box">Skills / Tools</span><span class="arrow">→</span><span class="box">Harness / Evals</span><span class="arrow">→</span><span class="box">Permissions / Secrets</span><span class="arrow">→</span><span class="box">State</span><span class="arrow">→</span><span class="box">Budget / Timeout</span><span class="arrow">→</span><span class="box">Evidence</span></div></div>
+<p>然后下面再接一个 runtime：任务进入 Queue，启动隔离 Worker，执行，自动验收，失败时重试或升级模型，保存 evidence，完成后销毁。这样本地一个成功的 Agent，才有机会变成云端 10 个、100 个、1000 个遵守同一 contract 的 worker。</p>
+<section class="runtime-grid">
+<figure class="figure"><img src="assets-v2/vercel-functions.png" alt="Vercel Functions 官方页面真实截图"><figcaption><span class="source-tag">REAL SITE</span><strong>Vercel Functions</strong>：托管执行、部署与弹性的一种现实形态。 <a href="https://vercel.com/kb/vercel-functions" target="_blank" rel="noreferrer">查看原站</a></figcaption></figure>
+<figure class="figure"><img src="assets-v2/aws-lambda.png" alt="AWS Lambda 官方页面真实截图"><figcaption><span class="source-tag">REAL SITE</span><strong>AWS Lambda</strong>：把代码包装成按需运行、可自动扩缩的执行单元。 <a href="https://aws.amazon.com/lambda/" target="_blank" rel="noreferrer">查看原站</a></figcaption></figure>
+</section>
+<p>这很像 Cloud Computing。CPU 越来越快，不等于你自动拥有一个能服务一亿用户的互联网公司。中间还需要虚拟化、调度、部署、监控、权限、存储和故障恢复。</p>
+<p>模型也一样。<strong>Model 是新的 CPU。Harness + Runtime，才更像 Agent 时代的 Cloud Layer。</strong></p>
+<div class="formula"><div class="small">ENTERPRISE AI OUTPUT</div><div class="eq">AI Output ≈<br><span>Model Intelligence</span> × <span>Reliability</span> × <span>Replication</span></div></div>
+<p>模型能力可以指数上涨。但如果 Reliability 很低，每个任务都要人盯；或者 Replication 很低，一个做对的 Agent 只能活在某个人的电脑里，那企业得到的增长当然还是线性的。</p>
+<div class="closing"><p>所以真正缺的可能不是下一个更强的模型，而是两个东西：<strong>Harness，让它稳定做对；Runtime，把“做对”复制到 production。</strong></p></div>
+<p style="margin-top:28px">上一次我写：Prompt 解决说法，Context 解决信息，Harness 解决行为。现在我想再补一句：<strong>Runtime 解决规模。</strong></p>
+<footer class="sources">截图均来自真实官方网站，本预览用于人工评审，不代表这些厂商为文中观点背书。来源：<a href="https://www.anthropic.com/features/making-of-claude-code" target="_blank" rel="noreferrer">Anthropic</a> · <a href="https://vercel.com/kb/vercel-functions" target="_blank" rel="noreferrer">Vercel</a> · <a href="https://aws.amazon.com/lambda/" target="_blank" rel="noreferrer">AWS</a></footer>
+</article></main>
+</body></html>
