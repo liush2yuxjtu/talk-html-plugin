@@ -194,6 +194,20 @@ python3 rednote-gallery/scripts/verify-publishing.py \
 
 如果任务要求微信草稿或发布，使用真实 `mp.weixin.qq.com` 或官方 API。
 
+MCP/API path（优先使用已连接工具）：
+
+1. 从当前工具列表发现能力并调用 `wechat_check_auth`，不以 App 权限面板代替连接测试；
+2. 修改时先 `wechat_get_draft` 确认目标 `media_id/index`，恢复本次修改要求；
+3. 校验正文并上传微信图片，调用 `wechat_create_draft` 或 `wechat_update_draft`；
+4. 业务成功 + 目标 `media_id/index` 可证明 `wechat-draft-saved`（API 不要求 browser appmsgid）；
+5. 再 `wechat_get_draft`，比对本次关键改动、标题、图片及结构，匹配后才是 `wechat-draft-verified`；
+6. 返回该次回读的目标文章 URL；URL 是否变化不能证明版本，API 回读不等于视觉验收。
+
+完整参数、失败恢复、隐私与版本规则见
+`skills/write/references/wechat-drafts.md`（相对仓库根目录）。
+用户仅要求写作或草稿时不要调用 publish；公开发表需要针对该稿的明确授权。
+以下 browser 的 appmsgid/UI 证据要求只适用于 browser path，不与 API 条件混为一谈。
+
 Browser path：
 
 1. authenticated browser；

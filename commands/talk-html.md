@@ -59,6 +59,9 @@ ship-bound 端到端录像走 `skills/talk-ship`（Playwright / tmux 抓 persona
 
 按以下顺序判断：
 
+0. **用户要公众号文章或微信草稿预览** —— 先执行 `skills/write/SKILL.md`（`/write`）；
+   这是平台写作分流，不进入本页的 gist 发布或 role CSV 渲染流程。
+
 1. **用户明确指定角色** —— 比如「给 CEO 看的一页」「让 reviewer 收下这个 diff」「我要给 DBA 看 migration」——直接跳到对应 role 命令，不再做 artifact 推断。
 2. **从对话内容推断 artifact_type** —— 读最近的消息、被引用的文件、被运行的命令。匹配 `skills/talk-html/role-routing.csv` 第一列 `artifact_type`。
 3. **CSV 的 `role_command` 列就是分派目的地**。

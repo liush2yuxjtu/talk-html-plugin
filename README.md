@@ -7,7 +7,7 @@
   <img alt="license" src="https://img.shields.io/badge/license-MIT-2d6a3e">
   <img alt="claude code" src="https://img.shields.io/badge/claude--code-plugin-1a1a1a">
   <img alt="codex" src="https://img.shields.io/badge/codex-compatible-1a1a1a">
-  <img alt="commands" src="https://img.shields.io/badge/commands-10-a26b00">
+  <img alt="commands" src="https://img.shields.io/badge/commands-11-a26b00">
   <img alt="skills" src="https://img.shields.io/badge/engines-4-5a3a8a">
   <img alt="zh-CN" src="https://img.shields.io/badge/lang-zh--CN-8a2a2a">
   <img alt="engines" src="https://img.shields.io/badge/engines-Playwright_+_ffmpeg_+_asciinema-3a3a3a">
@@ -44,7 +44,7 @@
 
 装上 `talk-html-plugin` 之后你直接得到：
 
-- **10 个 slash 命令** —— `/talk-html` 路由器 + 8 个 role 命令(`/talk-ux / talk-ceo / talk-data / talk-reviewer / talk-cto / talk-qa / talk-docs / talk-legal`)+ `/talk-ship` ship 录制。详细见 [§命令](#命令)。
+- **11 个 slash 命令** —— `/talk-html` 路由器 + 8 个 role 命令(`/talk-ux / talk-ceo / talk-data / talk-reviewer / talk-cto / talk-qa / talk-docs / talk-legal`)+ `/talk-ship` ship 录制 + `/write` 文章写作。详细见 [§命令](#命令)。
 - **2 套引擎** —— `skills/talk-html/`(静态页渲染 + 真内容 grounding + 嵌入真 recording + gist 发布回看)与 `skills/talk-ship/`(Playwright / tmux + asciinema 端到端 user journey 录制)。详细见 [§Two-engine structure](#two-engine-structure)。
 - **可选配的 `skills/gpt-image/`** —— `/talk-html --image` 自动给发布页面配一组图(发到 ChatGPT 让它读页 → 生图 → 嵌回 → 重发),由 plugin 自带的 browse daemon 驱动。
 - **role-routing 权威表** —— `skills/talk-html/role-routing.csv` 是 artifact_type → 角色 → 必看 proof → build/eval/gate 的契约源。改这一张表,所有 role 命令的契约一起更新。详细见 [§路由数据源](#路由数据源)。
@@ -62,13 +62,27 @@ curl -fsSL https://raw.githubusercontent.com/LiuShiyuMath/talk-html-plugin/main/
 这会装三份东西，相互独立、各自 idempotent：
 
 - 核心 skill → `~/.claude/skills/talk-html/`（保留原来的 `/talk-html` 入口与 publish/recall 流水线）
-- 插件路由 + 10 个斜杠命令 + 两套引擎 → `~/.claude/plugins/talk-html-plugin/`
+- 插件路由 + 11 个斜杠命令 + 两套引擎 → `~/.claude/plugins/talk-html-plugin/`
 - talk-ship 独立软链 → `~/.claude/skills/talk-ship` 与 `~/.codex/skills/talk-ship`（fresh install 时自动建好，指向同一份 `skills/talk-ship/`）
 
 ## 命令
 
+### `/write`：随口聊到公众号草稿
+
+`/write 把刚才聊的写成公众号文章，保留我的口吻，放到草稿箱给我看，不发布。`
+
+沿用聊天、语音转写、链接、截图和修改意见，完成：整理观点 → 核实来源 → 成文配图 →
+微信排版 → MCP 创建/更新草稿 → 回读比对 → 返回微信真实预览。
+只要求文章时交付正文；要求微信草稿时执行到平台回读。默认不公开发表。
+
+- 写作入口：[skills/write/SKILL.md](skills/write/SKILL.md)
+- 微信操作参考：[wechat-drafts.md](skills/write/references/wechat-drafts.md)
+- Claude Code command：[commands/write.md](commands/write.md)；Codex 通过 `skills/` 发现 `write`。
+- 从本 fork 安装/更新插件时使用 `liush2yuxjtu/talk-html-plugin`；旧的一行安装脚本仍指向上游，尚不包含本 fork 的 `/write`。
+
 | 命令 | 给谁看 | 必看 proof |
 |---|---|---|
+| `/write` | 文章作者 / 公众号读者 | 完整文章；平台草稿任务提供本次内容回读与真实预览 |
 | `/talk-html` | （路由器，按 artifact_type 自动分派） | — |
 | `/talk-ship` | ship-bound：Founder / Release Manager / 真实用户 | 端到端 user journey MP4 + contact sheet |
 | `/talk-ux` | Designer / UX / Product / a11y / brand / lifecycle | 截图对比 OR GIF/MP4 交互录像 |
