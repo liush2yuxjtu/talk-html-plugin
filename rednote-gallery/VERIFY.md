@@ -29,6 +29,16 @@ source-draft
 
 A later state may only be claimed when its own gate passes.
 
+## CLI regression checks
+
+Run the non-destructive public-CLI checks before changing the verifier:
+
+```bash
+python3 -m unittest discover -s rednote-gallery/scripts -p 'test_*.py' -v
+```
+
+These cover placeholder rejection, valid text, and whitespace-only padding. They do not save or publish platform drafts.
+
 ## 2. RedNote / Xiaohongshu draft verification
 
 ### 2.1 Draft generation PASS
