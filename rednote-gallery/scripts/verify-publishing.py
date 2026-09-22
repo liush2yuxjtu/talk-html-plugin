@@ -3,7 +3,7 @@ import argparse
 import re
 from pathlib import Path
 
-PLACEHOLDERS = re.compile(r"\\b(?:TODO|TBD)\\b|正文待补|待补充", re.I)
+PLACEHOLDERS = re.compile(r"\b(?:TODO|TBD)\b|正文待补|待补充", re.I)
 
 def fail(msg):
     print(f"FAIL: {msg}")
@@ -47,7 +47,7 @@ def verify_wechat(path: Path, title: str):
         if src.startswith(("http://", "https://")) and "mmbiz.qpic.cn" not in src:
             ok = fail(f"External non-WeChat image URL: {src[:120]}") and ok
     text_only = re.sub(r"<[^>]+>", " ", html)
-    text_only = re.sub(r"\\s+", " ", text_only).strip()
+    text_only = re.sub(r"\s+", " ", text_only).strip()
     if len(text_only) < 100:
         ok = fail("WeChat payload has too little readable text") and ok
     if ok:
